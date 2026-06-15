@@ -17,6 +17,9 @@
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="8.0.10" />
 
+    <!-- SQLite reference state store -->
+    <PackageVersion Include="Microsoft.Data.Sqlite" Version="8.0.10" />
+
     <!-- CLI -->
     <PackageVersion Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
 

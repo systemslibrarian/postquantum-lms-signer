@@ -13,6 +13,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **SQLite state store (`PostQuantum.LMS.Signer.Sqlite`)** — `SqliteStateStore`, a relational
+  `IStateStore` reference backend with crash-safe compare-and-swap (conditional `UPDATE … WHERE
+  version` under `BEGIN IMMEDIATE`); conformance-tested; the pattern ports to PostgreSQL/SQL Server.
+- **Hybrid promoted to production** — ML-DSA key generation/import/export (`MlDsaKeyPair`),
+  portable `HybridPublicKey` bundle, one-call verify requiring both legs.
+- **ASP.NET Core promoted to production** — pluggable `IStateStore` (Redis/EF/HSM ready) via
+  `LmsSignerOptions.StateStoreFactory`, options validation, low-budget warning, and
+  `LmsSignerHealthCheck` for capacity observability.
+- **Samples** — runnable `FirmwareSigning.Console` and `FirmwareSigning.Web` reference apps.
+- Precise package **maturity matrix** in the README.
 - Security assurance document ([/docs/security-assurance.md](/docs/security-assurance.md)):
   assurance status, threat-model summary, claimed-vs-not-claimed side-channel properties,
   non-goals, residual risks, and the supply-chain roadmap.

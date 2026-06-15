@@ -158,6 +158,7 @@ These signatures stay safe only because an internal counter **never goes backwar
 | **PostQuantum.LMS.Signer** | Core LMS & HSS signers, parameters, `IStateStore`, file/in-memory stores | ✅ Production |
 | **PostQuantum.LMS.Signer.Testing** | Known-answer vectors + an `IStateStore` **conformance harness** (prove your Redis/EF/HSM store is reuse-safe) + reuse-attack lab | ✅ Production |
 | **PostQuantum.LMS.Signer.Cli** (`pqlms`) | keygen / sign / verify / inspect / pubkey | ✅ Production |
+| **PostQuantum.LMS.Signer.Sqlite** | `SqliteStateStore` — a relational `IStateStore` with CAS; reference DB backend (pattern ports to Postgres/SQL Server) | ✅ Production |
 | **PostQuantum.LMS.Signer.AspNetCore** | DI: `services.AddLmsSigner(...)`, `ILmsSigningService`, pluggable stores, options validation, a capacity health check | ✅ Production |
 | **PostQuantum.LMS.Signer.Hybrid** | Composite **LMS/HSS + ML-DSA** signatures (belt-and-suspenders PQC), with ML-DSA key management and a bundled public key | ✅ Production |
 | **PostQuantum.LMS.Signer.Analyzers** | Roslyn rule `PQLMS001`: flags `InMemoryStateStore` for a persistent key | 🧱 Preview skeleton |
@@ -169,13 +170,13 @@ No hand-waving — here's exactly where each piece stands:
 
 | Capability | Maturity | Notes |
 |---|---|---|
-| LMS/HSS core (sign/verify/state) | **Stable, preview** | BC byte-for-byte + KAT validated, 73 tests on net8/net10. Awaiting external audit before a production assurance claim. |
+| LMS/HSS core (sign/verify/state) | **Stable, preview** | BC byte-for-byte + KAT validated, 77 tests on net8/net10. Awaiting external audit before a production assurance claim. |
 | `FileStateStore` (single-host) | **Stable, preview** | Atomic, integrity-checked, CAS. |
 | Testing conformance harness | **Stable** | |
 | CLI (`pqlms`) | **Stable, preview** | |
 | Hybrid (HSS + ML-DSA) | **Stable, preview** | ML-DSA via BouncyCastle. |
 | AspNetCore DI + health check | **Stable, preview** | Pluggable stores; bring your own Redis/EF/HSM store. |
-| Distributed / DB state store | **Not shipped** | The contract + conformance harness exist; a first-party backend is on the roadmap. See [docs/operations.md](docs/operations.md). |
+| Relational / DB state store | **Stable, preview** | `SqliteStateStore` (PostQuantum.LMS.Signer.Sqlite) with CAS; conformance-tested. Same pattern ports to Postgres/SQL Server. Multi-*host* signing still wants a server DB or HSM — see [docs/operations.md](docs/operations.md). |
 | Analyzers | **Experimental** | `PQLMS001` only; more rules planned. |
 | Templates | **Experimental** | Minimal starter. |
 | SHAKE256 / n=24 parameter sets | **Not implemented** | Selecting them throws rather than doing the wrong thing. |

@@ -8,6 +8,7 @@
     <Project Path="src/PostQuantum.LMS.Signer.AspNetCore/PostQuantum.LMS.Signer.AspNetCore.csproj" />
     <Project Path="src/PostQuantum.LMS.Signer.Cli/PostQuantum.LMS.Signer.Cli.csproj" />
     <Project Path="src/PostQuantum.LMS.Signer.Hybrid/PostQuantum.LMS.Signer.Hybrid.csproj" />
+    <Project Path="src/PostQuantum.LMS.Signer.Sqlite/PostQuantum.LMS.Signer.Sqlite.csproj" />
     <Project Path="src/PostQuantum.LMS.Signer.Testing/PostQuantum.LMS.Signer.Testing.csproj" />
     <Project Path="src/PostQuantum.LMS.Signer/PostQuantum.LMS.Signer.csproj" />
   </Folder>

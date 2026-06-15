@@ -25,6 +25,7 @@
     <ProjectReference Include="..\..\src\PostQuantum.LMS.Signer.Testing\PostQuantum.LMS.Signer.Testing.csproj" />
     <ProjectReference Include="..\..\src\PostQuantum.LMS.Signer.Hybrid\PostQuantum.LMS.Signer.Hybrid.csproj" />
     <ProjectReference Include="..\..\src\PostQuantum.LMS.Signer.AspNetCore\PostQuantum.LMS.Signer.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\src\PostQuantum.LMS.Signer.Sqlite\PostQuantum.LMS.Signer.Sqlite.csproj" />
   </ItemGroup>
 
   <ItemGroup>

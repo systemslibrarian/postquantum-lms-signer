@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>PostQuantum.Lms.Sqlite</RootNamespace>
+    <AssemblyName>PostQuantum.LMS.Signer.Sqlite</AssemblyName>
+
+    <PackageId>PostQuantum.LMS.Signer.Sqlite</PackageId>
+    <Title>PostQuantum.LMS.Signer.Sqlite</Title>
+    <Description>A SQLite-backed IStateStore for PostQuantum.LMS.Signer with crash-safe, compare-and-swap semantics — a reference relational state backend for single-host multi-process signing. The same conditional-UPDATE CAS pattern ports directly to PostgreSQL or SQL Server.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PostQuantum.LMS.Signer\PostQuantum.LMS.Signer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" />
+  </ItemGroup>
+
+</Project>

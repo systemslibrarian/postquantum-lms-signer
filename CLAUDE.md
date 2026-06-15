@@ -47,12 +47,14 @@ used twice. The design enforces these invariants:
 | Package | Path | Purpose |
 |---|---|---|
 | **Core** | `src/PostQuantum.LMS.Signer/` | Locked LMS/HSS engine, state stores, exceptions. (`net8.0`) |
-| **AspNetCore** | `src/PostQuantum.LMS.Signer.AspNetCore/` | DI integration: `AddLmsSigner`, `ILmsSigningService`, file-backed `HssSigningService`. (`net8.0`) |
-| **Hybrid** | `src/PostQuantum.LMS.Signer.Hybrid/` | Defense-in-depth composite: HSS + ML-DSA (FIPS 204) where **both** must verify. (`net8.0`) |
+| **Testing** | `src/PostQuantum.LMS.Signer.Testing/` | KAT vectors + `StateStoreConformance` harness + reuse lab (framework-agnostic). (`net8.0`) |
+| **Cli** | `src/PostQuantum.LMS.Signer.Cli/` | `pqlms` keygen/sign/verify/inspect/pubkey. (`net8.0`) |
+| **Sqlite** | `src/PostQuantum.LMS.Signer.Sqlite/` | `SqliteStateStore` — relational `IStateStore` with CAS; reference DB backend. (`net8.0`) |
+| **AspNetCore** | `src/PostQuantum.LMS.Signer.AspNetCore/` | DI: `AddLmsSigner`, `ILmsSigningService`, pluggable stores, options validation, `LmsSignerHealthCheck`. (`net8.0`) |
+| **Hybrid** | `src/PostQuantum.LMS.Signer.Hybrid/` | Defense-in-depth composite: HSS + ML-DSA (FIPS 204) where **both** must verify; `MlDsaKeyPair`, `HybridPublicKey`. (`net8.0`) |
 | **Analyzers** | `src/PostQuantum.LMS.Signer.Analyzers/` | Roslyn analyzer (`PQLMS001`: don't use `InMemoryStateStore` for a persistent key). (`netstandard2.0`) |
-| **Templates** | `templates/PostQuantum.LMS.Signer.Templates/` | `dotnet new pqlms-firmware-signer` scaffold (HSS + `FileStateStore` keygen/sign/verify). |
-| **Testing** | _(planned)_ | Test doubles / fixtures (`InternalsVisibleTo PostQuantum.LMS.Signer.Testing`). |
-| **Cli** | _(planned)_ | Command-line signer (`System.CommandLine` is already centralized). |
+| **Templates** | `templates/PostQuantum.LMS.Signer.Templates/` | `dotnet new pqlms-firmware-signer` scaffold. |
+| **Samples** | `samples/` | Runnable console + ASP.NET Core reference apps. |
 
 ## How to build & test
 
