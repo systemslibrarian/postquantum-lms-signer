@@ -31,7 +31,7 @@ Most libraries hand you the math and wish you luck with the state. **This librar
 
 ---
 
-## What makes it the gold standard
+## What it gives you
 
 | | |
 |---|---|
