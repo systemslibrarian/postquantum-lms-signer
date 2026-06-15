@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>FirmwareSigning.WebSample</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <IsPublishable>false</IsPublishable>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\PostQuantum.LMS.Signer\PostQuantum.LMS.Signer.csproj" />
+    <ProjectReference Include="..\..\src\PostQuantum.LMS.Signer.AspNetCore\PostQuantum.LMS.Signer.AspNetCore.csproj" />
+  </ItemGroup>
+
+</Project>

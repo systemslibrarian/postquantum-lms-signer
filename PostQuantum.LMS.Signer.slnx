@@ -1,4 +1,8 @@
 <Solution>
+  <Folder Name="/samples/">
+    <Project Path="samples/FirmwareSigning.Console/FirmwareSigning.Console.csproj" />
+    <Project Path="samples/FirmwareSigning.Web/FirmwareSigning.Web.csproj" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="src/PostQuantum.LMS.Signer.Analyzers/PostQuantum.LMS.Signer.Analyzers.csproj" />
     <Project Path="src/PostQuantum.LMS.Signer.AspNetCore/PostQuantum.LMS.Signer.AspNetCore.csproj" />
