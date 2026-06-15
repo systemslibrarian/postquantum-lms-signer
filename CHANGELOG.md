@@ -31,6 +31,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   key rotation & exhaustion management, observability, incident response, and the custom
   `IStateStore` validation checklist.
 - CodeQL static-analysis workflow ([/.github/workflows/codeql.yml](/.github/workflows/codeql.yml)).
+- **Benchmarks** (`benchmarks/`, BenchmarkDotNet) — head-to-head vs BouncyCastle for the firmware
+  parameter set; results and honest analysis in [/docs/benchmarks.md](/docs/benchmarks.md).
 - **Fuzz / negative-corpus tests** — verifiers never throw on arbitrary bytes; mutated/truncated
   signatures always fail closed; state and hybrid decoders throw only their documented exception type;
   corrupted state files are rejected. Runs as part of the CI test suite.

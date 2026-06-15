@@ -242,6 +242,7 @@ bool ok = HybridPublicKey.Decode(File.ReadAllBytes("fw-2026.hybrid.pub"))
 - [Samples](samples/) — runnable console and ASP.NET Core reference apps (`dotnet run --project samples/...`).
 - [Operations playbook](docs/operations.md) — rollback-safe deployment, single-writer topologies, backup/do-not-restore runbook, key rotation & exhaustion, incident response.
 - [Security assurance](docs/security-assurance.md) — assurance status, side-channel properties (claimed vs not), non-goals, supply-chain roadmap.
+- [Benchmarks](docs/benchmarks.md) — head-to-head vs BouncyCastle (same order of magnitude; lower allocations).
 - [Releasing & verifying artifacts](docs/releasing.md) — provenance, SBOM, checksum, and signature verification steps.
 - [Architecture decisions](docs/adr/) · [Security policy](SECURITY.md) · [Changelog](CHANGELOG.md) · [Maintainer guide](CLAUDE.md)
 

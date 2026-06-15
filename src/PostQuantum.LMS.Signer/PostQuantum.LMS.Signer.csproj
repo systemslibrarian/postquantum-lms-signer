@@ -18,6 +18,7 @@
   <ItemGroup>
     <InternalsVisibleTo Include="PostQuantum.LMS.Signer.Tests" />
     <InternalsVisibleTo Include="PostQuantum.LMS.Signer.Testing" />
+    <InternalsVisibleTo Include="PostQuantum.LMS.Signer.Benchmarks" />
   </ItemGroup>
 
 </Project>

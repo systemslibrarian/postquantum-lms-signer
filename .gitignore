@@ -4,6 +4,7 @@ obj/
 [Dd]ebug/
 [Rr]elease/
 artifacts/
+BenchmarkDotNet.Artifacts/
 *.user
 *.suo
 .vs/

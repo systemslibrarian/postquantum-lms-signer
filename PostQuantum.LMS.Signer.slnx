@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/benchmarks/">
+    <Project Path="benchmarks/PostQuantum.LMS.Signer.Benchmarks/PostQuantum.LMS.Signer.Benchmarks.csproj" />
+  </Folder>
   <Folder Name="/samples/">
     <Project Path="samples/FirmwareSigning.Console/FirmwareSigning.Console.csproj" />
     <Project Path="samples/FirmwareSigning.Web/FirmwareSigning.Web.csproj" />
