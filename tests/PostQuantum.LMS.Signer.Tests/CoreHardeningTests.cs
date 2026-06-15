@@ -51,13 +51,23 @@ public sealed class CoreHardeningTests
         // Every (height × width) combination's reported sizes must match the wire math.
         foreach (LmsAlgorithm lms in Enum.GetValues<LmsAlgorithm>())
         {
+            var lmsP = LmsParams.Resolve(lms);
             foreach (LmOtsAlgorithm ots in Enum.GetValues<LmOtsAlgorithm>())
             {
+                var otsP = LmOtsParams.Resolve(ots);
+                bool compatible = lmsP.HashAlgorithm == otsP.HashAlgorithm && lmsP.M == otsP.N;
+                if (!compatible)
+                {
+                    // Mismatched hash family/length must be rejected, not silently accepted.
+                    Assert.Throws<ArgumentException>(() => new LmsParameters(lms, ots));
+                    continue;
+                }
+
                 var p = new LmsParameters(lms, ots);
-                int h = LmsParams.Resolve(lms).H;
-                int otsSig = LmOtsParams.Resolve(ots).SignatureLength;
-                Assert.Equal(4 + otsSig + 4 + (h * 32), p.SignatureLength);
-                Assert.Equal(8 + 16 + 32, p.PublicKeyLength);
+                int h = lmsP.H;
+                int m = lmsP.M;
+                Assert.Equal(4 + otsP.SignatureLength + 4 + (h * m), p.SignatureLength);
+                Assert.Equal(8 + 16 + m, p.PublicKeyLength);
                 Assert.Equal(1L << h, p.MaxSignatures);
             }
         }

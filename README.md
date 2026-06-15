@@ -170,7 +170,7 @@ No hand-waving — here's exactly where each piece stands:
 
 | Capability | Maturity | Notes |
 |---|---|---|
-| LMS/HSS core (sign/verify/state) | **Stable, preview** | BC byte-for-byte + KAT validated, 82 tests (incl. fuzz/negative-corpus) on net8/net10. Awaiting external audit before a production assurance claim. |
+| LMS/HSS core (sign/verify/state) | **Stable, preview** | BC byte-for-byte + KAT validated, 99 tests (incl. fuzz/negative-corpus + all SP 800-208 sets) on net8/net10. Awaiting external audit before a production assurance claim. |
 | `FileStateStore` (single-host) | **Stable, preview** | Atomic, integrity-checked, CAS. |
 | Testing conformance harness | **Stable** | |
 | CLI (`pqlms`) | **Stable, preview** | |
@@ -179,7 +179,7 @@ No hand-waving — here's exactly where each piece stands:
 | Relational / DB state store | **Stable, preview** | `SqliteStateStore` (PostQuantum.LMS.Signer.Sqlite) with CAS; conformance-tested. Same pattern ports to Postgres/SQL Server. Multi-*host* signing still wants a server DB or HSM — see [docs/operations.md](docs/operations.md). |
 | Analyzers | **Experimental** | `PQLMS001` only; more rules planned. |
 | Templates | **Experimental** | Minimal starter. |
-| SHAKE256 / n=24 parameter sets | **Not implemented** | Selecting them throws rather than doing the wrong thing. |
+| All SP 800-208 sets (SHA-256 & SHAKE256, n=32 & n=24) | **Stable, preview** | All 16 LM-OTS + 20 LMS typecodes implemented; n=24 and SHAKE families cross-checked byte-for-byte vs BouncyCastle. |
 | SBOM · build provenance · checksums | **Automated** | Generated on every tagged release; verify per [docs/releasing.md](docs/releasing.md). |
 | Author-signed packages · NuGet publish | **Wired, secret-gated** | Active once a signing cert / `NUGET_API_KEY` secret is configured. |
 | Independent third-party audit | **Planned** | See [docs/security-assurance.md](docs/security-assurance.md). |

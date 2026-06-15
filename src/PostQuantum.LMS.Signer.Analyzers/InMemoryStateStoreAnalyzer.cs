@@ -34,9 +34,7 @@ namespace PostQuantum.Lms.Analyzers
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
             ImmutableArray.Create(Rule);
 
-        // TODO: PQLMS002 — flag a call to HssSigner/LmsSigner SignAsync whose Task is not awaited
-        //       (fire-and-forget signing can race state persistence).
-        // TODO: PQLMS003 — flag reuse of the same keyId across two CreateAsync calls in the same scope.
+        // PQLMS002 (unawaited SignAsync) and PQLMS003 (sync Sign) live in SignerUsageAnalyzer.
 
         /// <inheritdoc />
         public override void Initialize(AnalysisContext context)

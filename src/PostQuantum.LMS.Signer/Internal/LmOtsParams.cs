@@ -26,13 +26,29 @@ internal readonly record struct LmOtsParams(
     /// <summary>Total signature length in bytes: <c>4 (type) + n (randomizer C) + n*p</c>.</summary>
     public int SignatureLength => 4 + N + (N * P);
 
-    /// <summary>Resolves the parameters for a typecode. Values are taken verbatim from RFC 8554 Table 1.</summary>
+    /// <summary>Resolves the parameters for a typecode. Values are taken verbatim from RFC 8554 / SP 800-208.</summary>
     public static LmOtsParams Resolve(LmOtsAlgorithm type) => type switch
     {
-        LmOtsAlgorithm.Sha256N32W1 => new(type, LmsHashAlgorithm.Sha256, N: 32, W: 1, P: 265, Ls: 7),
-        LmOtsAlgorithm.Sha256N32W2 => new(type, LmsHashAlgorithm.Sha256, N: 32, W: 2, P: 133, Ls: 6),
-        LmOtsAlgorithm.Sha256N32W4 => new(type, LmsHashAlgorithm.Sha256, N: 32, W: 4, P: 67, Ls: 4),
-        LmOtsAlgorithm.Sha256N32W8 => new(type, LmsHashAlgorithm.Sha256, N: 32, W: 8, P: 34, Ls: 0),
+        // SHA-256, n=32
+        LmOtsAlgorithm.Sha256N32W1 => new(type, LmsHashAlgorithm.Sha256N32, N: 32, W: 1, P: 265, Ls: 7),
+        LmOtsAlgorithm.Sha256N32W2 => new(type, LmsHashAlgorithm.Sha256N32, N: 32, W: 2, P: 133, Ls: 6),
+        LmOtsAlgorithm.Sha256N32W4 => new(type, LmsHashAlgorithm.Sha256N32, N: 32, W: 4, P: 67, Ls: 4),
+        LmOtsAlgorithm.Sha256N32W8 => new(type, LmsHashAlgorithm.Sha256N32, N: 32, W: 8, P: 34, Ls: 0),
+        // SHA-256/192 (truncated), n=24
+        LmOtsAlgorithm.Sha256N24W1 => new(type, LmsHashAlgorithm.Sha256N24, N: 24, W: 1, P: 200, Ls: 8),
+        LmOtsAlgorithm.Sha256N24W2 => new(type, LmsHashAlgorithm.Sha256N24, N: 24, W: 2, P: 101, Ls: 6),
+        LmOtsAlgorithm.Sha256N24W4 => new(type, LmsHashAlgorithm.Sha256N24, N: 24, W: 4, P: 51, Ls: 4),
+        LmOtsAlgorithm.Sha256N24W8 => new(type, LmsHashAlgorithm.Sha256N24, N: 24, W: 8, P: 26, Ls: 0),
+        // SHAKE256, n=32
+        LmOtsAlgorithm.Shake256N32W1 => new(type, LmsHashAlgorithm.Shake256N32, N: 32, W: 1, P: 265, Ls: 7),
+        LmOtsAlgorithm.Shake256N32W2 => new(type, LmsHashAlgorithm.Shake256N32, N: 32, W: 2, P: 133, Ls: 6),
+        LmOtsAlgorithm.Shake256N32W4 => new(type, LmsHashAlgorithm.Shake256N32, N: 32, W: 4, P: 67, Ls: 4),
+        LmOtsAlgorithm.Shake256N32W8 => new(type, LmsHashAlgorithm.Shake256N32, N: 32, W: 8, P: 34, Ls: 0),
+        // SHAKE256, n=24
+        LmOtsAlgorithm.Shake256N24W1 => new(type, LmsHashAlgorithm.Shake256N24, N: 24, W: 1, P: 200, Ls: 8),
+        LmOtsAlgorithm.Shake256N24W2 => new(type, LmsHashAlgorithm.Shake256N24, N: 24, W: 2, P: 101, Ls: 6),
+        LmOtsAlgorithm.Shake256N24W4 => new(type, LmsHashAlgorithm.Shake256N24, N: 24, W: 4, P: 51, Ls: 4),
+        LmOtsAlgorithm.Shake256N24W8 => new(type, LmsHashAlgorithm.Shake256N24, N: 24, W: 8, P: 26, Ls: 0),
         _ => throw new ArgumentOutOfRangeException(nameof(type), type, "Unknown LM-OTS typecode."),
     };
 }

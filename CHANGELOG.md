@@ -11,8 +11,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-06-15
+
+Preview milestone: full SP 800-208 parameter coverage, a relational state store, productionized
+ASP.NET Core + Hybrid, samples, benchmarks, fuzz tests, and supply-chain automation (SBOM,
+provenance, checksums). Pre-1.0 — APIs may still change; see the assurance status before production use.
+
 ### Added
 
+- **Full SP 800-208 parameter-set coverage** — all 16 LM-OTS and 20 LMS typecodes: SHA-256 and
+  SHAKE256, at both full (n=32) and truncated (n=24) output; the n=24 and SHAKE families are
+  cross-validated byte-for-byte against BouncyCastle.
+- **Analyzer rules PQLMS002 / PQLMS003** — flag a discarded (unawaited) `SignAsync` result, and
+  suggest `SignAsync` over the blocking synchronous `Sign`.
 - **SQLite state store (`PostQuantum.LMS.Signer.Sqlite`)** — `SqliteStateStore`, a relational
   `IStateStore` reference backend with crash-safe compare-and-swap (conditional `UPDATE … WHERE
   version` under `BEGIN IMMEDIATE`); conformance-tested; the pattern ports to PostgreSQL/SQL Server.
@@ -47,7 +58,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Author-signed NuGet packages (wired in release.yml; pending a code-signing certificate secret).
 - NuGet publish on tag (wired; pending the `NUGET_API_KEY` secret).
 - Independent third-party security/cryptography audit.
-- SHAKE256 and truncated (n=24) RFC 8554 parameter sets (currently throw when selected).
 
 ## [0.1.0-preview.1]
 

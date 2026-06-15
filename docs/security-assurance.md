@@ -77,9 +77,9 @@ compose them, we do not re-implement them.
 
 - **Not a general-purpose cryptography library.** It implements LMS/HSS (and composes ML-DSA
   via BouncyCastle for the hybrid). It is not a place for arbitrary primitives.
-- **SHAKE256 and truncated (n=24) parameter sets are not implemented.** Only the SHA-256
-  (n=32) RFC 8554 sets are supported; selecting an unimplemented set **throws** rather than
-  silently doing the wrong thing.
+- **All SP 800-208 parameter sets are implemented** (SHA-256 and SHAKE256, n=32 and n=24); the
+  non-SHA-256/n32 families are cross-checked byte-for-byte against BouncyCastle. An unknown/unregistered
+  typecode **throws** rather than silently doing the wrong thing.
 - **No protection against whole-machine rollback in pure software.** See the threat model
   above. This requires hardware (HSM / TPM / hardware monotonic counter) or operational
   controls.

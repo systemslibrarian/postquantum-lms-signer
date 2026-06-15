@@ -6,3 +6,5 @@
 Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
 PQLMS001 | Security | Warning | InMemoryStateStoreAnalyzer
+PQLMS002 | Reliability | Warning | SignerUsageAnalyzer
+PQLMS003 | Reliability | Info | SignerUsageAnalyzer

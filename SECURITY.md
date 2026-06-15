@@ -53,8 +53,8 @@ limitation rather than a library defect.
 
 ## Cryptographic scope
 
-This release implements the **SHA-256 (n=32)** RFC 8554 parameter sets. The SP 800-208
-SHAKE256 and truncated (n=24) sets are not yet implemented; selecting them throws rather
-than silently doing the wrong thing.
+This release implements **all NIST SP 800-208 parameter sets**: SHA-256 and SHAKE256, at both
+full (n=32) and truncated (n=24) output — all 16 LM-OTS and 20 LMS typecodes. The non-SHA-256/n32
+families are cross-validated byte-for-byte against BouncyCastle.
 
 To God be the glory.
