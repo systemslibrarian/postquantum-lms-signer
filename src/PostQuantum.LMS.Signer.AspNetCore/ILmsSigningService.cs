@@ -2,7 +2,8 @@ namespace PostQuantum.Lms.AspNetCore;
 
 /// <summary>
 /// A long-lived signing service that owns a single stateful HSS key and serializes access to it.
-/// Register it with <see cref="ServiceCollectionExtensions.AddLmsSigner"/> and resolve it as a singleton.
+/// Register it with <see cref="ServiceCollectionExtensions.AddLmsSigner(Microsoft.Extensions.DependencyInjection.IServiceCollection, System.Action{LmsSignerOptions})"/>
+/// and resolve it as a singleton.
 /// </summary>
 public interface ILmsSigningService
 {

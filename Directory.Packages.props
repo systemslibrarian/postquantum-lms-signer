@@ -12,8 +12,10 @@
 
     <!-- DI / options / logging abstractions for AspNetCore + state stores. -->
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="8.0.10" />
 
     <!-- CLI -->
     <PackageVersion Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />

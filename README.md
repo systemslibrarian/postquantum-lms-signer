@@ -158,10 +158,28 @@ These signatures stay safe only because an internal counter **never goes backwar
 | **PostQuantum.LMS.Signer** | Core LMS & HSS signers, parameters, `IStateStore`, file/in-memory stores | ✅ Production |
 | **PostQuantum.LMS.Signer.Testing** | Known-answer vectors + an `IStateStore` **conformance harness** (prove your Redis/EF/HSM store is reuse-safe) + reuse-attack lab | ✅ Production |
 | **PostQuantum.LMS.Signer.Cli** (`pqlms`) | keygen / sign / verify / inspect / pubkey | ✅ Production |
-| **PostQuantum.LMS.Signer.AspNetCore** | DI: `services.AddLmsSigner(...)`, `ILmsSigningService` | 🧱 Preview skeleton |
+| **PostQuantum.LMS.Signer.AspNetCore** | DI: `services.AddLmsSigner(...)`, `ILmsSigningService`, pluggable stores, options validation, a capacity health check | ✅ Production |
 | **PostQuantum.LMS.Signer.Hybrid** | Composite **LMS/HSS + ML-DSA** signatures (belt-and-suspenders PQC), with ML-DSA key management and a bundled public key | ✅ Production |
 | **PostQuantum.LMS.Signer.Analyzers** | Roslyn rule `PQLMS001`: flags `InMemoryStateStore` for a persistent key | 🧱 Preview skeleton |
 | **PostQuantum.LMS.Signer.Templates** | `dotnet new pqlms-firmware-signer` scaffolding | 🧱 Preview skeleton |
+
+### Maturity, precisely
+
+No hand-waving — here's exactly where each piece stands:
+
+| Capability | Maturity | Notes |
+|---|---|---|
+| LMS/HSS core (sign/verify/state) | **Stable, preview** | BC byte-for-byte + KAT validated, 73 tests on net8/net10. Awaiting external audit before a production assurance claim. |
+| `FileStateStore` (single-host) | **Stable, preview** | Atomic, integrity-checked, CAS. |
+| Testing conformance harness | **Stable** | |
+| CLI (`pqlms`) | **Stable, preview** | |
+| Hybrid (HSS + ML-DSA) | **Stable, preview** | ML-DSA via BouncyCastle. |
+| AspNetCore DI + health check | **Stable, preview** | Pluggable stores; bring your own Redis/EF/HSM store. |
+| Distributed / DB state store | **Not shipped** | The contract + conformance harness exist; a first-party backend is on the roadmap. See [docs/operations.md](docs/operations.md). |
+| Analyzers | **Experimental** | `PQLMS001` only; more rules planned. |
+| Templates | **Experimental** | Minimal starter. |
+| SHAKE256 / n=24 parameter sets | **Not implemented** | Selecting them throws rather than doing the wrong thing. |
+| Independent audit · signed releases · SBOM | **Planned** | See [docs/security-assurance.md](docs/security-assurance.md). |
 
 ### Validate your own state store
 
@@ -216,9 +234,15 @@ bool ok = HybridPublicKey.Decode(File.ReadAllBytes("fw-2026.hybrid.pub"))
 - [CNSA 2.0 — software/firmware signing guidance](https://www.nsa.gov/cybersecurity-guidance/)
 - [FIPS 204 — ML-DSA](https://csrc.nist.gov/pubs/fips/204/final) (hybrid)
 
+## Documentation
+
+- [Operations playbook](docs/operations.md) — rollback-safe deployment, single-writer topologies, backup/do-not-restore runbook, key rotation & exhaustion, incident response.
+- [Security assurance](docs/security-assurance.md) — assurance status, side-channel properties (claimed vs not), non-goals, supply-chain roadmap.
+- [Architecture decisions](docs/adr/) · [Security policy](SECURITY.md) · [Changelog](CHANGELOG.md) · [Maintainer guide](CLAUDE.md)
+
 ## Status & honesty
 
-This is a **preview**. The core is implemented and cross-validated, but **before any CNSA/production claim it should undergo an independent third-party audit and a side-channel review.** We document residual risks rather than paper over them.
+This is a **preview**. The core is implemented and cross-validated, but **before any CNSA/production claim it should undergo an independent third-party audit and a side-channel review.** We document residual risks rather than paper over them — see [docs/security-assurance.md](docs/security-assurance.md).
 
 ## Contributing
 
