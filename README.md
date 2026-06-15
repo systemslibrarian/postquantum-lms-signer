@@ -159,7 +159,7 @@ These signatures stay safe only because an internal counter **never goes backwar
 | **PostQuantum.LMS.Signer.Testing** | Known-answer vectors + an `IStateStore` **conformance harness** (prove your Redis/EF/HSM store is reuse-safe) + reuse-attack lab | ✅ Production |
 | **PostQuantum.LMS.Signer.Cli** (`pqlms`) | keygen / sign / verify / inspect / pubkey | ✅ Production |
 | **PostQuantum.LMS.Signer.AspNetCore** | DI: `services.AddLmsSigner(...)`, `ILmsSigningService` | 🧱 Preview skeleton |
-| **PostQuantum.LMS.Signer.Hybrid** | Composite **LMS/HSS + ML-DSA** signatures (belt-and-suspenders PQC) | 🧱 Preview skeleton |
+| **PostQuantum.LMS.Signer.Hybrid** | Composite **LMS/HSS + ML-DSA** signatures (belt-and-suspenders PQC), with ML-DSA key management and a bundled public key | ✅ Production |
 | **PostQuantum.LMS.Signer.Analyzers** | Roslyn rule `PQLMS001`: flags `InMemoryStateStore` for a persistent key | 🧱 Preview skeleton |
 | **PostQuantum.LMS.Signer.Templates** | `dotnet new pqlms-firmware-signer` scaffolding | 🧱 Preview skeleton |
 
@@ -178,12 +178,28 @@ await StateStoreConformance.AssertPreventsReuseAsync(myCustomStore);
 
 ## Hybrid signing (defense in depth)
 
-Pair the conservative, stateful LMS/HSS with the stateless lattice scheme **ML-DSA (FIPS 204)**, so a break in *either* family alone is not enough to forge:
+Pair the conservative, stateful LMS/HSS with the stateless lattice scheme **ML-DSA (FIPS 204)**, so a break in *either* family alone is not enough to forge. Verification requires **both** legs to pass.
 
 ```csharp
-// PostQuantum.LMS.Signer.Hybrid  (preview)
-byte[] composite = await hybridSigner.SignAsync(message);   // HSS ‖ ML-DSA, both required to verify
+using PostQuantum.Lms;
+using PostQuantum.Lms.Hybrid;
+using PostQuantum.Lms.State;
+
+// One stateful HSS key + one stateless ML-DSA key (defaults to ML-DSA-65).
+using var hss = await HssSigner.CreateAsync(HssParameters.FirmwareDefault, store, "fw-2026");
+var mlDsa = MlDsaKeyPair.Generate();
+var signer = new HybridHssMlDsaSigner(hss, mlDsa);
+
+byte[] composite = await signer.SignAsync(image);   // HSS ‖ ML-DSA
+HybridPublicKey pub = signer.PublicKey();           // one bundle to distribute
+File.WriteAllBytes("fw-2026.hybrid.pub", pub.Encode());
+
+// On the device — both legs must verify, or it's rejected:
+bool ok = HybridPublicKey.Decode(File.ReadAllBytes("fw-2026.hybrid.pub"))
+                         .Verify(image, composite);
 ```
+
+> The HSS key is stateful (guard it per the rules above). The ML-DSA key is an ordinary stateless key — export it with `mlDsa.ExportPrivateKey()` and store it securely.
 
 ---
 

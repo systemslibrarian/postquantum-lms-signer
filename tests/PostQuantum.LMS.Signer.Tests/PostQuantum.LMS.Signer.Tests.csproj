@@ -22,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\PostQuantum.LMS.Signer\PostQuantum.LMS.Signer.csproj" />
     <ProjectReference Include="..\..\src\PostQuantum.LMS.Signer.Testing\PostQuantum.LMS.Signer.Testing.csproj" />
+    <ProjectReference Include="..\..\src\PostQuantum.LMS.Signer.Hybrid\PostQuantum.LMS.Signer.Hybrid.csproj" />
   </ItemGroup>
 
   <ItemGroup>

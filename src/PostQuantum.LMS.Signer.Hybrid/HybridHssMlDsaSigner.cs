@@ -10,16 +10,21 @@ namespace PostQuantum.Lms.Hybrid;
 /// <remarks>
 /// <para>The HSS leg is the headline asset and carries the never-reuse state guarantees of the core
 /// library; the ML-DSA leg is stateless and hedges against an unforeseen weakness in either primitive.</para>
-/// <para>TODO: Add managed ML-DSA key generation/rotation and binding of the ML-DSA public key to the HSS
-/// identity. Currently the ML-DSA signer/verifier are supplied via constructor so the composite logic
-/// stays backend-agnostic and fully testable.</para>
+/// <para>Generate and manage the ML-DSA key with <see cref="MlDsaKeyPair"/>, and distribute a single
+/// <see cref="HybridPublicKey"/> bundle (via <see cref="PublicKey"/>) to verifiers.</para>
 /// </remarks>
 public sealed class HybridHssMlDsaSigner
 {
     private readonly HssSigner _hssSigner;
     private readonly IStatelessSigner _mlDsaSigner;
+    private readonly MLDsaParameters? _mlDsaParameters;
+    private readonly byte[]? _mlDsaPublicKey;
 
-    /// <summary>Creates a composite signer over an HSS signer and a stateless (ML-DSA) signer.</summary>
+    /// <summary>
+    /// Creates a composite signer over an HSS signer and any stateless (ML-DSA) signer. This backend-agnostic
+    /// overload suits testing or custom ML-DSA backends; use the <see cref="MlDsaKeyPair"/> overload to also
+    /// export a <see cref="HybridPublicKey"/> bundle.
+    /// </summary>
     /// <param name="hssSigner">The stateful HSS signer.</param>
     /// <param name="mlDsaSigner">The stateless second-leg signer.</param>
     public HybridHssMlDsaSigner(HssSigner hssSigner, IStatelessSigner mlDsaSigner)
@@ -28,6 +33,40 @@ public sealed class HybridHssMlDsaSigner
         ArgumentNullException.ThrowIfNull(mlDsaSigner);
         _hssSigner = hssSigner;
         _mlDsaSigner = mlDsaSigner;
+    }
+
+    /// <summary>
+    /// Creates a composite signer over an HSS signer and an ML-DSA key pair, retaining the ML-DSA public
+    /// material so <see cref="PublicKey"/> can produce a portable verification bundle.
+    /// </summary>
+    public HybridHssMlDsaSigner(HssSigner hssSigner, MlDsaKeyPair mlDsaKeyPair)
+    {
+        ArgumentNullException.ThrowIfNull(hssSigner);
+        ArgumentNullException.ThrowIfNull(mlDsaKeyPair);
+        _hssSigner = hssSigner;
+        _mlDsaSigner = mlDsaKeyPair.CreateSigner();
+        _mlDsaParameters = mlDsaKeyPair.Parameters;
+        _mlDsaPublicKey = mlDsaKeyPair.PublicKey;
+    }
+
+    /// <summary>HSS signatures still available — the stateful leg is the limiting factor.</summary>
+    public long SignaturesRemaining => _hssSigner.SignaturesRemaining;
+
+    /// <summary>
+    /// The portable hybrid public-key bundle (HSS + ML-DSA) for distribution to verifiers. Only available
+    /// when the signer was constructed with an <see cref="MlDsaKeyPair"/>.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">The signer was built without ML-DSA public-key material.</exception>
+    public HybridPublicKey PublicKey()
+    {
+        if (_mlDsaPublicKey is null || _mlDsaParameters is null)
+        {
+            throw new InvalidOperationException(
+                "This signer was constructed without ML-DSA public-key material. Use the MlDsaKeyPair " +
+                "constructor to export a HybridPublicKey.");
+        }
+
+        return new HybridPublicKey(_hssSigner.PublicKey(), _mlDsaParameters, _mlDsaPublicKey);
     }
 
     /// <summary>
