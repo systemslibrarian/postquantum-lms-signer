@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>PostQuantum.Lms.Hybrid</RootNamespace>
+    <AssemblyName>PostQuantum.LMS.Signer.Hybrid</AssemblyName>
+
+    <PackageId>PostQuantum.LMS.Signer.Hybrid</PackageId>
+    <Title>PostQuantum.LMS.Signer.Hybrid</Title>
+    <Description>Defense-in-depth composite signatures: combine a stateful LMS/HSS signature with a stateless ML-DSA (FIPS 204) signature so both must verify.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PostQuantum.LMS.Signer\PostQuantum.LMS.Signer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BouncyCastle.Cryptography" />
+  </ItemGroup>
+
+</Project>

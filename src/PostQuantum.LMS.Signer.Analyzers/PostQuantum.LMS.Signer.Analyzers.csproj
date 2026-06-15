@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>PostQuantum.Lms.Analyzers</RootNamespace>
+    <AssemblyName>PostQuantum.LMS.Signer.Analyzers</AssemblyName>
+
+    <PackageId>PostQuantum.LMS.Signer.Analyzers</PackageId>
+    <Title>PostQuantum.LMS.Signer.Analyzers</Title>
+    <Description>Roslyn analyzers that catch state-safety footguns when using PostQuantum.LMS.Signer (e.g. using a non-crash-safe in-memory state store for a persistent signing key).</Description>
+
+    <!-- Analyzer packaging: ship the analyzer assembly, not a runtime library. -->
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <DevelopmentDependency>true</DevelopmentDependency>
+    <IsRoslynComponent>true</IsRoslynComponent>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+
+    <!-- Analyzers shouldn't be trimmable runtime libs; and code-style enforcement gets in the way here. -->
+    <IsTrimmable>false</IsTrimmable>
+    <IsAotCompatible>false</IsAotCompatible>
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+
+    <!-- CPM + analyzer SDK pinning can conflict; manage versions locally for this one project. -->
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- Analyzer release tracking (RS2008). -->
+  <ItemGroup>
+    <AdditionalFiles Include="AnalyzerReleases.Shipped.md" />
+    <AdditionalFiles Include="AnalyzerReleases.Unshipped.md" />
+  </ItemGroup>
+
+  <!-- Pack the analyzer dll into the analyzers/dotnet/cs path so consuming projects load it. -->
+  <ItemGroup>
+    <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+  </ItemGroup>
+
+</Project>

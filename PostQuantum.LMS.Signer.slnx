@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/PostQuantum.LMS.Signer.Analyzers/PostQuantum.LMS.Signer.Analyzers.csproj" />
+    <Project Path="src/PostQuantum.LMS.Signer.AspNetCore/PostQuantum.LMS.Signer.AspNetCore.csproj" />
+    <Project Path="src/PostQuantum.LMS.Signer.Cli/PostQuantum.LMS.Signer.Cli.csproj" />
+    <Project Path="src/PostQuantum.LMS.Signer.Hybrid/PostQuantum.LMS.Signer.Hybrid.csproj" />
+    <Project Path="src/PostQuantum.LMS.Signer.Testing/PostQuantum.LMS.Signer.Testing.csproj" />
+    <Project Path="src/PostQuantum.LMS.Signer/PostQuantum.LMS.Signer.csproj" />
+  </Folder>
+  <Folder Name="/templates/">
+    <Project Path="templates/PostQuantum.LMS.Signer.Templates/PostQuantum.LMS.Signer.Templates.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/PostQuantum.LMS.Signer.Tests/PostQuantum.LMS.Signer.Tests.csproj" />
+  </Folder>
+</Solution>

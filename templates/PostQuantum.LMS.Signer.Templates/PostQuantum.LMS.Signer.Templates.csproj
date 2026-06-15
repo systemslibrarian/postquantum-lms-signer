@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>PostQuantum.LMS.Signer.Templates</PackageId>
+    <Title>PostQuantum.LMS.Signer.Templates</Title>
+    <Description>dotnet new templates for PostQuantum.LMS.Signer, including a firmware-signer sample (HSS + FileStateStore keygen/sign/verify).</Description>
+
+    <!-- This is a template content package: it ships content, not compiled code. -->
+    <PackageType>Template</PackageType>
+    <IncludeContentInPack>true</IncludeContentInPack>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <ContentTargetFolders>content</ContentTargetFolders>
+    <NoWarn>$(NoWarn);NU5128</NoWarn>
+
+    <!-- Nothing here is real code; don't auto-compile the sample content or require docs. -->
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <IsTrimmable>false</IsTrimmable>
+    <IsAotCompatible>false</IsAotCompatible>
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <NoDefaultExcludes>true</NoDefaultExcludes>
+
+    <!-- A content-only template package has no assemblies, so don't emit a symbol package. -->
+    <IncludeSymbols>false</IncludeSymbols>
+    <SymbolPackageFormat></SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Ship every file under templates/ as package content; never compile it. -->
+    <Content Include="templates\**\*" Exclude="templates\**\bin\**;templates\**\obj\**" />
+    <Compile Remove="templates\**\*.cs" />
+    <None Remove="templates\**\*" />
+  </ItemGroup>
+
+</Project>

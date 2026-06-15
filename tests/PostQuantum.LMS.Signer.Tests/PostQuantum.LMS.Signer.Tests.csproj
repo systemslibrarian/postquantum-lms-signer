@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+    <RootNamespace>PostQuantum.Lms.Tests</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <IsPublishable>false</IsPublishable>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <!-- Tests intentionally exercise obsolete/edge APIs and don't need doc comments.
+         CA1707: underscores in test method names are idiomatic. -->
+    <NoWarn>$(NoWarn);CS1591;CA1707</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="BouncyCastle.Cryptography" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\PostQuantum.LMS.Signer\PostQuantum.LMS.Signer.csproj" />
+    <ProjectReference Include="..\..\src\PostQuantum.LMS.Signer.Testing\PostQuantum.LMS.Signer.Testing.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Internal types are exercised directly by the cross-check tests. -->
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+</Project>

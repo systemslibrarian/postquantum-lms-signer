@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>PostQuantum.Lms.Testing</RootNamespace>
+    <AssemblyName>PostQuantum.LMS.Signer.Testing</AssemblyName>
+    <PackageId>PostQuantum.LMS.Signer.Testing</PackageId>
+    <Title>PostQuantum.LMS.Signer.Testing</Title>
+    <Description>Test helpers for PostQuantum.LMS.Signer: known-answer vectors, an IStateStore conformance harness to validate custom (Redis/EF/HSM) state stores are crash- and reuse-safe, and a reuse-attack lab. Framework-agnostic (no xUnit dependency).</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PostQuantum.LMS.Signer\PostQuantum.LMS.Signer.csproj" />
+  </ItemGroup>
+
+</Project>

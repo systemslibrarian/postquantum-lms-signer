@@ -1,0 +1,29 @@
+## .NET / build output
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+artifacts/
+*.user
+*.suo
+.vs/
+.vscode/
+*.nupkg
+*.snupkg
+
+## Test / coverage
+[Tt]est[Rr]esults/
+coverage/
+*.coverage
+*.trx
+
+## Rider / JetBrains
+.idea/
+
+## Local crypto material — NEVER commit private keys or signer state
+*.lmskey
+*.lms.state
+*.lms.state.tmp
+*.lms.state.bak
+secrets/
+*.pem

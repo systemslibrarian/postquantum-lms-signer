@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>PostQuantum.Lms</RootNamespace>
+    <AssemblyName>PostQuantum.LMS.Signer</AssemblyName>
+
+    <PackageId>PostQuantum.LMS.Signer</PackageId>
+    <Title>PostQuantum.LMS.Signer</Title>
+    <Description>Production-grade, auditable .NET implementation of NIST SP 800-208 / RFC 8554 stateful hash-based signatures (LMS &amp; HSS) for firmware signing, secure boot, and code signing. Pure managed core with crash-safe, never-reuse state management as the headline feature.</Description>
+
+    <!-- AOT / trimming friendliness for embedded + signing-service scenarios. -->
+    <IsTrimmable>true</IsTrimmable>
+    <IsAotCompatible>true</IsAotCompatible>
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="PostQuantum.LMS.Signer.Tests" />
+    <InternalsVisibleTo Include="PostQuantum.LMS.Signer.Testing" />
+  </ItemGroup>
+
+</Project>

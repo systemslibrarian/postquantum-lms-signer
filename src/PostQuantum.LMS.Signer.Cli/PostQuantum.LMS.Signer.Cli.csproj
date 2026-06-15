@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>PostQuantum.Lms.Cli</RootNamespace>
+    <AssemblyName>pqlms</AssemblyName>
+
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>pqlms</ToolCommandName>
+    <PackageId>PostQuantum.LMS.Signer.Cli</PackageId>
+    <Title>PostQuantum.LMS.Signer CLI (pqlms)</Title>
+    <Description>Command-line tool for LMS/HSS stateful hash-based signatures: key generation, firmware/code signing, verification, and state inspection. Install with: dotnet tool install -g PostQuantum.LMS.Signer.Cli</Description>
+
+    <!-- Program.cs uses underscores in no public API; relax doc requirement for the app. -->
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CA1303</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PostQuantum.LMS.Signer\PostQuantum.LMS.Signer.csproj" />
+  </ItemGroup>
+
+</Project>
