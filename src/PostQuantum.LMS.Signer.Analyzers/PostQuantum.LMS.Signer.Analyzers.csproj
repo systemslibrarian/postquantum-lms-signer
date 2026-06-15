@@ -11,6 +11,11 @@
 
     <!-- Analyzer packaging: ship the analyzer assembly, not a runtime library. -->
     <IncludeBuildOutput>false</IncludeBuildOutput>
+    <!-- No symbol package: there is no runtime assembly to symbolicate (avoids NU5017). -->
+    <IncludeSymbols>false</IncludeSymbols>
+    <SymbolPackageFormat></SymbolPackageFormat>
+    <!-- Analyzers carry no runtime dependencies; suppress the (empty) dependency group to avoid NU5128. -->
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
     <DevelopmentDependency>true</DevelopmentDependency>
     <IsRoslynComponent>true</IsRoslynComponent>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>

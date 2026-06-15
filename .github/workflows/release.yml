@@ -1,0 +1,110 @@
+name: Release
+
+# Tag a version (e.g. `git tag v0.9.0 && git push origin v0.9.0`) to build, attest, and publish.
+on:
+  push:
+    tags: [ 'v*' ]
+  workflow_dispatch:
+
+permissions:
+  contents: write       # create the GitHub Release
+  id-token: write       # required for build-provenance attestations
+  attestations: write   # write the provenance attestation
+
+jobs:
+  release:
+    name: Pack, attest & publish
+    runs-on: ubuntu-latest
+    env:
+      # Optional secrets — steps that use them no-op when unset.
+      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      SIGN_CERT_BASE64: ${{ secrets.SIGNING_CERTIFICATE_BASE64 }}
+      SIGN_CERT_PASSWORD: ${{ secrets.SIGNING_CERTIFICATE_PASSWORD }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build -c Release --no-restore
+
+      - name: Test (net8.0 + net10.0)
+        run: dotnet test -c Release --no-build --verbosity normal
+
+      - name: Pack
+        run: dotnet pack -c Release --no-restore -o ./artifacts
+
+      - name: Generate SBOMs (CycloneDX, one per package)
+        run: |
+          set -euo pipefail
+          dotnet tool install --global CycloneDX
+          export PATH="$PATH:$HOME/.dotnet/tools"
+          mkdir -p ./artifacts/sbom
+          for proj in src/*/*.csproj; do
+            name="$(basename "$proj" .csproj)"
+            echo "SBOM: $name"
+            dotnet CycloneDX "$proj" --json --output ./artifacts/sbom --filename "$name.cyclonedx.json"
+          done
+
+      - name: Generate checksums
+        run: |
+          set -euo pipefail
+          cd ./artifacts
+          sha256sum *.nupkg *.snupkg > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+
+      - name: Attest build provenance for packages
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: |
+            ./artifacts/*.nupkg
+            ./artifacts/*.snupkg
+
+      - name: Sign packages (only if a signing certificate secret is configured)
+        if: ${{ env.SIGN_CERT_BASE64 != '' }}
+        run: |
+          set -euo pipefail
+          echo "$SIGN_CERT_BASE64" | base64 -d > codesign.pfx
+          for pkg in ./artifacts/*.nupkg; do
+            dotnet nuget sign "$pkg" \
+              --certificate-path codesign.pfx \
+              --certificate-password "$SIGN_CERT_PASSWORD" \
+              --timestamper http://timestamp.digicert.com
+          done
+          rm -f codesign.pfx
+
+      - name: Publish to NuGet.org (only if NUGET_API_KEY is configured)
+        if: ${{ env.NUGET_API_KEY != '' }}
+        run: |
+          dotnet nuget push "./artifacts/*.nupkg" \
+            --api-key "$NUGET_API_KEY" \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
+
+      - name: Upload workflow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ github.ref_name }}
+          path: ./artifacts/**
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          prerelease: ${{ contains(github.ref_name, '-') }}
+          files: |
+            ./artifacts/*.nupkg
+            ./artifacts/*.snupkg
+            ./artifacts/SHA256SUMS.txt
+            ./artifacts/sbom/*.json

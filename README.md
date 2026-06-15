@@ -180,7 +180,9 @@ No hand-waving — here's exactly where each piece stands:
 | Analyzers | **Experimental** | `PQLMS001` only; more rules planned. |
 | Templates | **Experimental** | Minimal starter. |
 | SHAKE256 / n=24 parameter sets | **Not implemented** | Selecting them throws rather than doing the wrong thing. |
-| Independent audit · signed releases · SBOM | **Planned** | See [docs/security-assurance.md](docs/security-assurance.md). |
+| SBOM · build provenance · checksums | **Automated** | Generated on every tagged release; verify per [docs/releasing.md](docs/releasing.md). |
+| Author-signed packages · NuGet publish | **Wired, secret-gated** | Active once a signing cert / `NUGET_API_KEY` secret is configured. |
+| Independent third-party audit | **Planned** | See [docs/security-assurance.md](docs/security-assurance.md). |
 
 ### Validate your own state store
 
@@ -240,6 +242,7 @@ bool ok = HybridPublicKey.Decode(File.ReadAllBytes("fw-2026.hybrid.pub"))
 - [Samples](samples/) — runnable console and ASP.NET Core reference apps (`dotnet run --project samples/...`).
 - [Operations playbook](docs/operations.md) — rollback-safe deployment, single-writer topologies, backup/do-not-restore runbook, key rotation & exhaustion, incident response.
 - [Security assurance](docs/security-assurance.md) — assurance status, side-channel properties (claimed vs not), non-goals, supply-chain roadmap.
+- [Releasing & verifying artifacts](docs/releasing.md) — provenance, SBOM, checksum, and signature verification steps.
 - [Architecture decisions](docs/adr/) · [Security policy](SECURITY.md) · [Changelog](CHANGELOG.md) · [Maintainer guide](CLAUDE.md)
 
 ## Status & honesty
