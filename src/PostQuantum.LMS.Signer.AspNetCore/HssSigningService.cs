@@ -136,7 +136,15 @@ public sealed class HssSigningService : ILmsSigningService, IDisposable
         }
 
         _disposed = true;
-        _signer?.Dispose();
-        _gate.Dispose();
+        _gate.Wait();
+        try
+        {
+            _signer?.Dispose();
+        }
+        finally
+        {
+            _gate.Release();
+            _gate.Dispose();
+        }
     }
 }

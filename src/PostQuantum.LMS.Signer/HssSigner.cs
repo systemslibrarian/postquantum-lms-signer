@@ -127,6 +127,15 @@ public sealed class HssSigner : IDisposable
         }
 
         _disposed = true;
-        _gate.Dispose();
+        _gate.Wait();
+        try
+        {
+            // _engine does not require disposal.
+        }
+        finally
+        {
+            _gate.Release();
+            _gate.Dispose();
+        }
     }
 }

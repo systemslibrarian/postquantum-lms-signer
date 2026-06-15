@@ -186,5 +186,14 @@ public sealed class SqliteStateStore : IStateStore, IDisposable
                "aborting to prevent one-time-key reuse.");
 
     /// <summary>Releases the internal initialization lock.</summary>
-    public void Dispose() => _initGate.Dispose();
+    public void Dispose()
+    {
+        _initGate.Wait();
+        try { }
+        finally
+        {
+            _initGate.Release();
+            _initGate.Dispose();
+        }
+    }
 }

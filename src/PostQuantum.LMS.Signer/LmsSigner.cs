@@ -191,7 +191,15 @@ public sealed class LmsSigner : IDisposable
         }
 
         _disposed = true;
-        CryptographicOperations.ZeroMemory(_seed);
-        _gate.Dispose();
+        _gate.Wait();
+        try
+        {
+            CryptographicOperations.ZeroMemory(_seed);
+        }
+        finally
+        {
+            _gate.Release();
+            _gate.Dispose();
+        }
     }
 }
