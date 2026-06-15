@@ -170,7 +170,7 @@ No hand-waving — here's exactly where each piece stands:
 
 | Capability | Maturity | Notes |
 |---|---|---|
-| LMS/HSS core (sign/verify/state) | **Stable, preview** | BC byte-for-byte + KAT validated, 77 tests on net8/net10. Awaiting external audit before a production assurance claim. |
+| LMS/HSS core (sign/verify/state) | **Stable, preview** | BC byte-for-byte + KAT validated, 82 tests (incl. fuzz/negative-corpus) on net8/net10. Awaiting external audit before a production assurance claim. |
 | `FileStateStore` (single-host) | **Stable, preview** | Atomic, integrity-checked, CAS. |
 | Testing conformance harness | **Stable** | |
 | CLI (`pqlms`) | **Stable, preview** | |

@@ -31,6 +31,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   key rotation & exhaustion management, observability, incident response, and the custom
   `IStateStore` validation checklist.
 - CodeQL static-analysis workflow ([/.github/workflows/codeql.yml](/.github/workflows/codeql.yml)).
+- **Fuzz / negative-corpus tests** — verifiers never throw on arbitrary bytes; mutated/truncated
+  signatures always fail closed; state and hybrid decoders throw only their documented exception type;
+  corrupted state files are rejected. Runs as part of the CI test suite.
 - **Release supply-chain automation** ([/.github/workflows/release.yml](/.github/workflows/release.yml)):
   tag-driven pack, per-package **CycloneDX SBOMs**, **SHA-256 checksums**, **build-provenance
   attestations** (`actions/attest-build-provenance`), optional code-signing and NuGet publish (secret-gated),
@@ -41,7 +44,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Author-signed NuGet packages (wired in release.yml; pending a code-signing certificate secret).
 - NuGet publish on tag (wired; pending the `NUGET_API_KEY` secret).
-- Fuzzing in CI for the wire-format and state-decode parsers.
 - Independent third-party security/cryptography audit.
 - SHAKE256 and truncated (n=24) RFC 8554 parameter sets (currently throw when selected).
 
