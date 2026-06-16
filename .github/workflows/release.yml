@@ -24,12 +24,12 @@ jobs:
       SIGN_CERT_PASSWORD: ${{ secrets.SIGNING_CERTIFICATE_PASSWORD }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: |
             8.0.x
@@ -67,7 +67,7 @@ jobs:
           cat SHA256SUMS.txt
 
       - name: Attest build provenance for packages
-        uses: actions/attest-build-provenance@v2
+        uses: actions/attest-build-provenance@v4
         with:
           subject-path: |
             ./artifacts/*.nupkg
@@ -105,13 +105,13 @@ jobs:
             --skip-duplicate
 
       - name: Upload workflow artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: release-${{ github.ref_name }}
           path: ./artifacts/**
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           generate_release_notes: true
           prerelease: ${{ contains(github.ref_name, '-') }}
