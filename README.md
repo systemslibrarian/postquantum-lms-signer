@@ -8,7 +8,7 @@
 
 [![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%2010.0-512BD4)](https://dotnet.microsoft.com/)
 [![Spec](https://img.shields.io/badge/spec-RFC%208554%20%2F%20SP%20800--208-0a7)](https://datatracker.ietf.org/doc/html/rfc8554)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue)](https://github.com/systemslibrarian/postquantum-lms-signer/blob/main/LICENSE)
 [![Status](https://img.shields.io/badge/status-preview-orange)]()
 
 ---
@@ -157,8 +157,8 @@ These signatures stay safe only because an internal counter **never goes backwar
 | **PostQuantum.LMS.Signer.Sqlite** | `SqliteStateStore` — a relational `IStateStore` with CAS; reference DB backend (pattern ports to Postgres/SQL Server) | ✅ Production |
 | **PostQuantum.LMS.Signer.AspNetCore** | DI: `services.AddLmsSigner(...)`, `ILmsSigningService`, pluggable stores, options validation, a capacity health check | ✅ Production |
 | **PostQuantum.LMS.Signer.Hybrid** | Composite **LMS/HSS + ML-DSA** signatures (belt-and-suspenders PQC), with ML-DSA key management and a bundled public key | ✅ Production |
-| **PostQuantum.LMS.Signer.Analyzers** | Roslyn rule `PQLMS001`: flags `InMemoryStateStore` for a persistent key | 🧱 Preview skeleton |
-| **PostQuantum.LMS.Signer.Templates** | `dotnet new pqlms-firmware-signer` scaffolding | 🧱 Preview skeleton |
+| **PostQuantum.LMS.Signer.Analyzers** | Roslyn rules `PQLMS001`/`PQLMS002`/`PQLMS003`: flag a persistent-key `InMemoryStateStore`, an unawaited `SignAsync`, and the synchronous `Sign` wrapper | ✅ Production |
+| **PostQuantum.LMS.Signer.Templates** | `dotnet new pqlms-firmware-signer` — a working HSS + `FileStateStore` keygen/sign/verify starter | ✅ Production |
 
 > **Why several packages instead of one?** The core (`PostQuantum.LMS.Signer`) is deliberately
 > **dependency-free** — pure managed, trimmable, AOT-friendly — because its primary job is firmware and
@@ -181,14 +181,14 @@ No hand-waving — here's exactly where each piece stands:
 | CLI (`pqlms`) | **Stable, preview** | |
 | Hybrid (HSS + ML-DSA) | **Stable, preview** | ML-DSA via BouncyCastle. |
 | AspNetCore DI + health check | **Stable, preview** | Pluggable stores; bring your own Redis/EF/HSM store. |
-| Relational / DB state store | **Stable, preview** | `SqliteStateStore` (PostQuantum.LMS.Signer.Sqlite) with CAS; conformance-tested. Same pattern ports to Postgres/SQL Server. Multi-*host* signing still wants a server DB or HSM — see [docs/operations.md](docs/operations.md). |
-| Analyzers | **Experimental** | `PQLMS001` only; more rules planned. |
-| Templates | **Experimental** | Minimal starter. |
+| Relational / DB state store | **Stable, preview** | `SqliteStateStore` (PostQuantum.LMS.Signer.Sqlite) with CAS; conformance-tested. Same pattern ports to Postgres/SQL Server. Multi-*host* signing still wants a server DB or HSM — see [docs/operations.md](https://github.com/systemslibrarian/postquantum-lms-signer/blob/main/docs/operations.md). |
+| Analyzers | **Stable, preview** | Three rules (`PQLMS001`–`PQLMS003`), release-tracked and tested; more rules planned. |
+| Templates | **Stable, preview** | One `dotnet new` template (firmware-signer: HSS + `FileStateStore`). |
 | All SP 800-208 sets (SHA-256 & SHAKE256, n=32 & n=24) | **Stable, preview** | All 16 LM-OTS + 20 LMS typecodes implemented; n=24 and SHAKE families cross-checked byte-for-byte vs BouncyCastle. |
-| SBOM · build provenance · checksums | **Automated** | Generated on every tagged release; verify per [docs/releasing.md](docs/releasing.md). |
+| SBOM · build provenance · checksums | **Automated** | Generated on every tagged release; verify per [docs/releasing.md](https://github.com/systemslibrarian/postquantum-lms-signer/blob/main/docs/releasing.md). |
 | NuGet publish | **Live** | Published to NuGet.org via **Trusted Publishing** (OIDC) on every tagged release — no stored API key. |
 | Author-signed packages | **Wired, secret-gated** | Active once a code-signing certificate secret is configured; until then packages carry NuGet.org's repository signature. |
-| Independent third-party audit | **Planned** | See [docs/security-assurance.md](docs/security-assurance.md). |
+| Independent third-party audit | **Planned** | See [docs/security-assurance.md](https://github.com/systemslibrarian/postquantum-lms-signer/blob/main/docs/security-assurance.md). |
 
 ### Validate your own state store
 
@@ -245,20 +245,20 @@ bool ok = HybridPublicKey.Decode(File.ReadAllBytes("fw-2026.hybrid.pub"))
 
 ## Documentation
 
-- [Samples](samples/) — runnable console and ASP.NET Core reference apps (`dotnet run --project samples/...`).
-- [Operations playbook](docs/operations.md) — rollback-safe deployment, single-writer topologies, backup/do-not-restore runbook, key rotation & exhaustion, incident response.
-- [Security assurance](docs/security-assurance.md) — assurance status, side-channel properties (claimed vs not), non-goals, supply-chain roadmap.
-- [Benchmarks](docs/benchmarks.md) — head-to-head vs BouncyCastle (same order of magnitude; lower allocations).
-- [Releasing & verifying artifacts](docs/releasing.md) — provenance, SBOM, checksum, and signature verification steps.
-- [Architecture decisions](docs/adr/) · [Security policy](SECURITY.md) · [Changelog](CHANGELOG.md) · [Maintainer guide](CLAUDE.md)
+- [Samples](https://github.com/systemslibrarian/postquantum-lms-signer/tree/main/samples) — runnable console and ASP.NET Core reference apps (`dotnet run --project samples/...`).
+- [Operations playbook](https://github.com/systemslibrarian/postquantum-lms-signer/blob/main/docs/operations.md) — rollback-safe deployment, single-writer topologies, backup/do-not-restore runbook, key rotation & exhaustion, incident response.
+- [Security assurance](https://github.com/systemslibrarian/postquantum-lms-signer/blob/main/docs/security-assurance.md) — assurance status, side-channel properties (claimed vs not), non-goals, supply-chain roadmap.
+- [Benchmarks](https://github.com/systemslibrarian/postquantum-lms-signer/blob/main/docs/benchmarks.md) — head-to-head vs BouncyCastle (same order of magnitude; lower allocations).
+- [Releasing & verifying artifacts](https://github.com/systemslibrarian/postquantum-lms-signer/blob/main/docs/releasing.md) — provenance, SBOM, checksum, and signature verification steps.
+- [Architecture decisions](https://github.com/systemslibrarian/postquantum-lms-signer/tree/main/docs/adr) · [Security policy](https://github.com/systemslibrarian/postquantum-lms-signer/blob/main/SECURITY.md) · [Changelog](https://github.com/systemslibrarian/postquantum-lms-signer/blob/main/CHANGELOG.md) · [Maintainer guide](https://github.com/systemslibrarian/postquantum-lms-signer/blob/main/CLAUDE.md)
 
 ## Status & honesty
 
-This is a **preview**. The core is implemented and cross-validated, but **before any CNSA/production claim it should undergo an independent third-party audit and a side-channel review.** We document residual risks rather than paper over them — see [docs/security-assurance.md](docs/security-assurance.md).
+This is a **preview**. The core is implemented and cross-validated, but **before any CNSA/production claim it should undergo an independent third-party audit and a side-channel review.** We document residual risks rather than paper over them — see [docs/security-assurance.md](https://github.com/systemslibrarian/postquantum-lms-signer/blob/main/docs/security-assurance.md).
 
 ## Contributing
 
-Issues and PRs welcome — especially additional official test vectors, state-store backends, and audit findings. See [CLAUDE.md](CLAUDE.md) for architecture and the state-safety invariants any change must preserve.
+Issues and PRs welcome — especially additional official test vectors, state-store backends, and audit findings. See [CLAUDE.md](https://github.com/systemslibrarian/postquantum-lms-signer/blob/main/CLAUDE.md) for architecture and the state-safety invariants any change must preserve.
 
 ## License
 
