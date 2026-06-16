@@ -19,17 +19,36 @@ git push origin v0.9.0
 
 Versions containing a hyphen (e.g. `v0.9.0-preview.1`) are marked as pre-releases automatically.
 
+## Publishing to NuGet.org (Trusted Publishing)
+
+Publishing uses **[NuGet Trusted Publishing](https://learn.microsoft.com/nuget/nuget-org/trusted-publishing)**
+(OIDC) — there is **no long-lived `NUGET_API_KEY` secret**. At publish time the workflow exchanges a
+GitHub-issued OIDC token for a short-lived (1-hour) NuGet API key via the `NuGet/login` action, then pushes.
+
+One-time setup:
+
+1. On **nuget.org → your username → Trusted Publishing**, add a policy:
+   - **Repository Owner:** `systemslibrarian`
+   - **Repository:** `postquantum-lms-signer`
+   - **Workflow File:** `release.yml` (file name only — no `.github/workflows/` prefix)
+   - **Environment:** leave empty (this workflow uses no GitHub environment)
+2. Add a repository secret **`NUGET_USER`** = your nuget.org **profile name** (not your email).
+   It is an identifier, not a credential; the publish step is skipped when it is unset.
+
+> Private-repo policies start in a 7-day "pending activation" window and become permanent after the
+> first successful publish (nuget.org needs the repo/owner IDs from a real run to lock the policy).
+
 ## Optional secrets
 
 These steps no-op unless the corresponding repository secret is set:
 
 | Secret | Effect |
 |--------|--------|
-| `NUGET_API_KEY` | Pushes the packages to NuGet.org (`--skip-duplicate`). |
+| `NUGET_USER` | Your nuget.org profile name; enables the Trusted-Publishing push (`--skip-duplicate`). |
 | `SIGNING_CERTIFICATE_BASE64` | Base64 of a code-signing `.pfx`; enables `dotnet nuget sign`. |
 | `SIGNING_CERTIFICATE_PASSWORD` | Password for the signing certificate. |
 
-Without `NUGET_API_KEY`, a release still builds, attests, and publishes artifacts to the GitHub
+Without `NUGET_USER`, a release still builds, attests, and publishes artifacts to the GitHub
 Release — it just doesn't push to NuGet. Author-signing requires your own certificate; until one is
 configured, packages rely on NuGet.org's repository signature.
 

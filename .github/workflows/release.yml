@@ -8,7 +8,7 @@ on:
 
 permissions:
   contents: write       # create the GitHub Release
-  id-token: write       # required for build-provenance attestations
+  id-token: write       # OIDC: build-provenance attestations + NuGet Trusted Publishing
   attestations: write   # write the provenance attestation
 
 jobs:
@@ -16,8 +16,10 @@ jobs:
     name: Pack, attest & publish
     runs-on: ubuntu-latest
     env:
-      # Optional secrets — steps that use them no-op when unset.
-      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      # Publishing uses NuGet Trusted Publishing (OIDC) — no long-lived API key is stored.
+      # NUGET_USER is only your nuget.org profile name (an identifier, not a credential);
+      # publishing is skipped when it is unset. SIGN_CERT_* remain optional secrets.
+      NUGET_USER: ${{ secrets.NUGET_USER }}
       SIGN_CERT_BASE64: ${{ secrets.SIGNING_CERTIFICATE_BASE64 }}
       SIGN_CERT_PASSWORD: ${{ secrets.SIGNING_CERTIFICATE_PASSWORD }}
     steps:
@@ -84,11 +86,21 @@ jobs:
           done
           rm -f codesign.pfx
 
-      - name: Publish to NuGet.org (only if NUGET_API_KEY is configured)
-        if: ${{ env.NUGET_API_KEY != '' }}
+      # Trusted Publishing: exchange the GitHub OIDC token for a short-lived (1-hour) NuGet
+      # API key. Run this immediately before the push so the temporary key hasn't expired.
+      # Requires a trusted-publishing policy on nuget.org matching this repo + workflow file.
+      - name: NuGet login (Trusted Publishing → short-lived API key)
+        id: nuget-login
+        if: ${{ env.NUGET_USER != '' }}
+        uses: NuGet/login@v1
+        with:
+          user: ${{ env.NUGET_USER }}
+
+      - name: Publish to NuGet.org (only if NUGET_USER is configured)
+        if: ${{ env.NUGET_USER != '' }}
         run: |
           dotnet nuget push "./artifacts/*.nupkg" \
-            --api-key "$NUGET_API_KEY" \
+            --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}" \
             --source https://api.nuget.org/v3/index.json \
             --skip-duplicate
 
