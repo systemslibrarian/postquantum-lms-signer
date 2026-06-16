@@ -11,6 +11,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.2] - 2026-06-16
+
+Documentation-only release to refresh the NuGet package page (no library code changes).
+
+### Changed
+
+- **README renders cleanly on NuGet.org** — removed the centered raw-HTML wrappers that NuGet's
+  Markdown sanitizer mangled, and converted all relative documentation/sample links to absolute
+  `github.com` URLs so they resolve on the package page instead of 404-ing.
+- **Accurate package maturity** — the Analyzers package (three tested rules, `PQLMS001`–`PQLMS003`)
+  and the Templates package (a working `dotnet new` firmware-signer) are no longer mislabeled as
+  "preview skeletons."
+- Documented the move to **NuGet Trusted Publishing** (OIDC) in place of a stored `NUGET_API_KEY`.
+
 ## [0.9.1] - 2026-06-15
 
 First published release on NuGet.org. Carries the state-safety hardening below on top of 0.9.0.
@@ -113,7 +127,8 @@ Initial preview. Stateful hash-based signatures (NIST SP 800-208 / RFC 8554, LMS
   and cause one-time-key reuse; this is not defendable in pure software. See
   [/docs/operations.md](/docs/operations.md).
 
-[Unreleased]: https://github.com/systemslibrarian/postquantum-lms-signer/compare/v0.9.1...HEAD
+[Unreleased]: https://github.com/systemslibrarian/postquantum-lms-signer/compare/v0.9.2...HEAD
+[0.9.2]: https://github.com/systemslibrarian/postquantum-lms-signer/compare/v0.9.1...v0.9.2
 [0.9.1]: https://github.com/systemslibrarian/postquantum-lms-signer/compare/v0.9.0...v0.9.1
 [0.9.0]: https://github.com/systemslibrarian/postquantum-lms-signer/releases/tag/v0.9.0
 [0.1.0-preview.1]: https://github.com/systemslibrarian/postquantum-lms-signer/releases/tag/v0.1.0-preview.1
