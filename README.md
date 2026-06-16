@@ -1,5 +1,3 @@
-<div align="center">
-
 # 🛡️ PostQuantum.LMS.Signer
 
 ### Stateful hash-based signatures for .NET — built for firmware, secure boot, and code signing in the post-quantum era.
@@ -12,8 +10,6 @@
 [![Spec](https://img.shields.io/badge/spec-RFC%208554%20%2F%20SP%20800--208-0a7)](https://datatracker.ietf.org/doc/html/rfc8554)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 [![Status](https://img.shields.io/badge/status-preview-orange)]()
-
-</div>
 
 ---
 
@@ -164,6 +160,15 @@ These signatures stay safe only because an internal counter **never goes backwar
 | **PostQuantum.LMS.Signer.Analyzers** | Roslyn rule `PQLMS001`: flags `InMemoryStateStore` for a persistent key | 🧱 Preview skeleton |
 | **PostQuantum.LMS.Signer.Templates** | `dotnet new pqlms-firmware-signer` scaffolding | 🧱 Preview skeleton |
 
+> **Why several packages instead of one?** The core (`PostQuantum.LMS.Signer`) is deliberately
+> **dependency-free** — pure managed, trimmable, AOT-friendly — because its primary job is firmware and
+> embedded signing. Each integration ships separately so you install only what you need and the core
+> never inherits their dependencies: **Sqlite** pulls in native SQLite, **Hybrid** pulls in BouncyCastle
+> (for ML-DSA), and **AspNetCore** pulls in the `Microsoft.Extensions.*` DI stack. The remaining three
+> aren't runtime libraries at all — **Cli** is a `dotnet tool`, **Analyzers** a compile-time Roslyn
+> component, and **Templates** a `dotnet new` content package. It's the same core-plus-providers shape
+> you already know from EF Core and Serilog: pay only for what you use.
+
 ### Maturity, precisely
 
 No hand-waving — here's exactly where each piece stands:
@@ -181,7 +186,8 @@ No hand-waving — here's exactly where each piece stands:
 | Templates | **Experimental** | Minimal starter. |
 | All SP 800-208 sets (SHA-256 & SHAKE256, n=32 & n=24) | **Stable, preview** | All 16 LM-OTS + 20 LMS typecodes implemented; n=24 and SHAKE families cross-checked byte-for-byte vs BouncyCastle. |
 | SBOM · build provenance · checksums | **Automated** | Generated on every tagged release; verify per [docs/releasing.md](docs/releasing.md). |
-| Author-signed packages · NuGet publish | **Wired, secret-gated** | Active once a signing cert / `NUGET_API_KEY` secret is configured. |
+| NuGet publish | **Live** | Published to NuGet.org via **Trusted Publishing** (OIDC) on every tagged release — no stored API key. |
+| Author-signed packages | **Wired, secret-gated** | Active once a code-signing certificate secret is configured; until then packages carry NuGet.org's repository signature. |
 | Independent third-party audit | **Planned** | See [docs/security-assurance.md](docs/security-assurance.md). |
 
 ### Validate your own state store
@@ -260,10 +266,6 @@ Apache-2.0.
 
 ---
 
-<div align="center">
-
 *Part of the **PostQuantum.*** family — the Bouncy Castle of the post-quantum era.*
 
 **To God be the glory.**
-
-</div>
