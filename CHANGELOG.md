@@ -11,6 +11,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.1] - 2026-06-15
+
+First published release on NuGet.org. Carries the state-safety hardening below on top of 0.9.0.
+
+### Fixed
+
+- **Disposal-race hardening** — `Dispose()` now acquires the gate / init-lock before releasing
+  resources across `HssSigner`, `LmsSigner`, `HssSigningService`, and `SqliteStateStore`, so disposal
+  cannot race a concurrent operation (e.g. zeroing the LMS seed or disposing a semaphore mid-sign).
+
 ## [0.9.0] - 2026-06-15
 
 Preview milestone: full SP 800-208 parameter coverage, a relational state store, productionized
@@ -103,5 +113,7 @@ Initial preview. Stateful hash-based signatures (NIST SP 800-208 / RFC 8554, LMS
   and cause one-time-key reuse; this is not defendable in pure software. See
   [/docs/operations.md](/docs/operations.md).
 
-[Unreleased]: https://github.com/systemslibrarian/postquantum-lms-signer/compare/v0.1.0-preview.1...HEAD
+[Unreleased]: https://github.com/systemslibrarian/postquantum-lms-signer/compare/v0.9.1...HEAD
+[0.9.1]: https://github.com/systemslibrarian/postquantum-lms-signer/compare/v0.9.0...v0.9.1
+[0.9.0]: https://github.com/systemslibrarian/postquantum-lms-signer/releases/tag/v0.9.0
 [0.1.0-preview.1]: https://github.com/systemslibrarian/postquantum-lms-signer/releases/tag/v0.1.0-preview.1
