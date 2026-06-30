@@ -19,6 +19,12 @@
 
     <!-- SQLite reference state store -->
     <PackageVersion Include="Microsoft.Data.Sqlite" Version="8.0.10" />
+    <!-- Transitive pin: the Microsoft.Data.Sqlite 8.0 LTS line resolves the native
+         SQLitePCLRaw bundle at 2.1.6. The entire 2.x native line (SQLitePCLRaw.lib.e_sqlite3
+         <= 2.1.11) carries advisory GHSA-2m69-gcr7-jv3q (bundled SQLite CVE). The 3.x bundle
+         replaces that native package with SourceGear.sqlite3 (SQLite 3.50.x, patched), so the
+         flagged package leaves the graph. Transitive pinning lifts the bundle for all consumers. -->
+    <PackageVersion Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.3" />
 
     <!-- Benchmarks -->
     <PackageVersion Include="BenchmarkDotNet" Version="0.14.0" />

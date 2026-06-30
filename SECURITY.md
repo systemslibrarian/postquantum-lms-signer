@@ -2,18 +2,18 @@
 
 ## Status
 
-PostQuantum.LMS.Signer is **preview** software. The core LMS/HSS implementation is
-cross-validated against BouncyCastle and pinned known-answer vectors, but it has **not**
-yet undergone an independent third-party audit or a formal side-channel review. **Do not
-make a CNSA 2.0 / production assurance claim on the basis of this library alone** until
-that review has happened.
+PostQuantum.LMS.Signer is **1.0** software: the public API and the on-disk/wire formats
+are stable. The core LMS/HSS implementation is cross-validated against BouncyCastle and
+pinned known-answer vectors, but it has **not** undergone an independent third-party audit
+or a formal side-channel review. **Do not make a CNSA 2.0 / production assurance claim on
+the basis of this library alone** until you have commissioned that review.
 
 ## Supported versions
 
 | Version | Supported |
 |---------|-----------|
-| 0.1.x (preview) | ✅ security fixes |
-| < 0.1   | ❌ |
+| 1.x     | ✅ security fixes |
+| < 1.0 (preview) | ❌ |
 
 ## Reporting a vulnerability
 

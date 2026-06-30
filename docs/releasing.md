@@ -13,11 +13,11 @@ Releases are tag-driven. Pushing a `v*` tag runs [`.github/workflows/release.yml
 7. creates a **GitHub Release** with the packages, checksums, and SBOMs attached.
 
 ```bash
-git tag v0.9.0
-git push origin v0.9.0
+git tag v1.0.0
+git push origin v1.0.0
 ```
 
-Versions containing a hyphen (e.g. `v0.9.0-preview.1`) are marked as pre-releases automatically.
+Versions containing a hyphen (e.g. `v1.1.0-rc.1`) are marked as pre-releases automatically.
 
 ## Publishing to NuGet.org (Trusted Publishing)
 
@@ -57,7 +57,7 @@ configured, packages rely on NuGet.org's repository signature.
 **Provenance** (proves the package was built by this repo's release workflow, from a specific commit):
 
 ```bash
-gh attestation verify PostQuantum.LMS.Signer.0.9.0.nupkg \
+gh attestation verify PostQuantum.LMS.Signer.1.0.0.nupkg \
   --repo systemslibrarian/postquantum-lms-signer
 ```
 
@@ -70,7 +70,7 @@ sha256sum -c SHA256SUMS.txt
 **Package signature** (if author-signed, or to inspect the NuGet repository signature):
 
 ```bash
-dotnet nuget verify PostQuantum.LMS.Signer.0.9.0.nupkg
+dotnet nuget verify PostQuantum.LMS.Signer.1.0.0.nupkg
 ```
 
 **SBOM**: each package ships a CycloneDX JSON SBOM (`<package>.cyclonedx.json`) listing its dependency
@@ -78,7 +78,8 @@ graph — feed it to your vulnerability scanner or SCA tooling.
 
 ## Support policy
 
-This project is **preview** (pre-1.0). Until 1.0, minor/patch releases may contain breaking changes;
-see [/CHANGELOG.md](../CHANGELOG.md). Security fixes target the latest preview — report issues per
+This project is **1.0**. It follows [Semantic Versioning](https://semver.org/): no breaking API or
+on-disk/wire-format changes within the 1.x line; breaking changes wait for 2.0. See
+[/CHANGELOG.md](../CHANGELOG.md). Security fixes target the latest 1.x release — report issues per
 [/SECURITY.md](../SECURITY.md). Assurance status and non-goals are documented in
 [security-assurance.md](security-assurance.md).

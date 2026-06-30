@@ -143,7 +143,7 @@ software cannot fix), move the authority for the monotonic counter into hardware
 - **Validate before trusting a key to it.** Run the conformance harness (§9) against your
   hardware-backed store. A store that does not truly enforce CAS is worse than `FileStateStore`.
 
-This is conceptual guidance — no HSM/TPM `IStateStore` ships in this preview.
+This is conceptual guidance — no HSM/TPM `IStateStore` ships in this release.
 
 ---
 

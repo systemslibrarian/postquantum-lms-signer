@@ -5,11 +5,48 @@ All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-> **Preview notice.** This project is in **preview**. Until a `1.0.0` release, minor and patch
-> versions may include breaking changes. See [/SECURITY.md](/SECURITY.md) and
+> **Versioning.** As of `1.0.0` this project follows [Semantic Versioning](https://semver.org/):
+> no breaking API or on-disk/wire-format changes within the 1.x line. `1.0` is a **stability**
+> promise, **not** an audited-assurance claim — see [/SECURITY.md](/SECURITY.md) and
 > [/docs/security-assurance.md](/docs/security-assurance.md) for the current assurance status.
 
 ## [Unreleased]
+
+## [1.0.0] - 2026-06-30
+
+First stable release. **`1.0` denotes API and format stability — not an independent
+cryptographic audit** (none has been performed; see the Security note below).
+
+### Changed
+
+- **Stable API and on-disk/wire-format guarantee.** The public API and the persisted state
+  format are now covered by Semantic Versioning: no breaking changes within the 1.x line.
+- **Maturity labels updated** from "stable, preview" to **stable** across the README package
+  and capability tables; status badge and documentation reflect 1.0.
+- **Documentation aligned with shipped supply-chain assurances** — the security-assurance
+  supply-chain section now records SBOMs, build-provenance attestations, CI fuzzing, CodeQL,
+  and Trusted-Publishing as *in place* rather than planned.
+
+### Fixed
+
+- **HSS re-key fault no longer risks index reuse.** `HssSigner.SignAsync` now advances state
+  (`PrepareNext`, including subtree re-keying) *inside* the persist-or-restore guard, and
+  `HssEngine.Rekey` builds the fresh subtree and parent chain signature into locals before
+  committing any field. Previously, a fault during re-keying (e.g. an allocation failure while
+  building the new subtree) could leave the in-memory engine partially mutated — counter reset
+  but the old, exhausted tree still in place — so a process that caught the fault and kept
+  signing on the same instance could reuse a one-time-key index. A crash/restart was already
+  safe (durable state was never advanced); this closes the fault-and-continue window.
+
+### Security
+
+- This release has **not** had an independent third-party cryptographic audit or a formal
+  side-channel review. Do not make a CNSA 2.0 / production assurance claim on the basis of
+  this library alone; commission your own review where required. See
+  [/docs/security-assurance.md](/docs/security-assurance.md).
+- **Dependency hardening** — pinned the transitive native SQLite binary
+  (`SQLitePCLRaw.lib.e_sqlite3`) to a patched release to clear advisory GHSA-2m69-gcr7-jv3q,
+  which affected the `PostQuantum.LMS.Signer.Sqlite` dependency graph.
 
 ## [0.9.2] - 2026-06-16
 
@@ -127,7 +164,8 @@ Initial preview. Stateful hash-based signatures (NIST SP 800-208 / RFC 8554, LMS
   and cause one-time-key reuse; this is not defendable in pure software. See
   [/docs/operations.md](/docs/operations.md).
 
-[Unreleased]: https://github.com/systemslibrarian/postquantum-lms-signer/compare/v0.9.2...HEAD
+[Unreleased]: https://github.com/systemslibrarian/postquantum-lms-signer/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/systemslibrarian/postquantum-lms-signer/compare/v0.9.2...v1.0.0
 [0.9.2]: https://github.com/systemslibrarian/postquantum-lms-signer/compare/v0.9.1...v0.9.2
 [0.9.1]: https://github.com/systemslibrarian/postquantum-lms-signer/compare/v0.9.0...v0.9.1
 [0.9.0]: https://github.com/systemslibrarian/postquantum-lms-signer/releases/tag/v0.9.0

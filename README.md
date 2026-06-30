@@ -9,7 +9,17 @@
 [![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%2010.0-512BD4)](https://dotnet.microsoft.com/)
 [![Spec](https://img.shields.io/badge/spec-RFC%208554%20%2F%20SP%20800--208-0a7)](https://datatracker.ietf.org/doc/html/rfc8554)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](https://github.com/systemslibrarian/postquantum-lms-signer/blob/main/LICENSE)
-[![Status](https://img.shields.io/badge/status-preview-orange)]()
+[![Status](https://img.shields.io/badge/status-1.0%20stable-2ea44f)]()
+
+---
+
+## Status & Assurance (1.0)
+
+- **API stability** — Stable. No breaking changes are expected within 1.x.
+- **Wire & on-disk state format** — Stable and versioned. Signatures and public keys interoperate with any conformant RFC 8554 / SP 800-208 implementation.
+- **Independent audit** — This library has **not** received a formal third-party cryptographic audit, nor a side-channel / constant-time evaluation. See [docs/security-assurance.md](https://github.com/systemslibrarian/postquantum-lms-signer/blob/main/docs/security-assurance.md).
+- **Intended audience** — Teams comfortable operating their own cryptographic systems and performing their own security review where required. Stateful schemes demand operational discipline to avoid one-time-key reuse — read the [state-safety model](#the-state-safety-model-read-this-part) and [operations playbook](https://github.com/systemslibrarian/postquantum-lms-signer/blob/main/docs/operations.md) before production use.
+- **Not recommended for** — High-value systems that require externally validated cryptographic assurance without performing additional independent review.
 
 ---
 
@@ -175,16 +185,16 @@ No hand-waving — here's exactly where each piece stands:
 
 | Capability | Maturity | Notes |
 |---|---|---|
-| LMS/HSS core (sign/verify/state) | **Stable, preview** | BC byte-for-byte + KAT validated, 99 tests (incl. fuzz/negative-corpus + all SP 800-208 sets) on net8/net10. Awaiting external audit before a production assurance claim. |
-| `FileStateStore` (single-host) | **Stable, preview** | Atomic, integrity-checked, CAS. |
+| LMS/HSS core (sign/verify/state) | **Stable** | BC byte-for-byte + KAT validated, 99 tests (incl. fuzz/negative-corpus + all SP 800-208 sets) on net8/net10. Awaiting external audit before a production assurance claim. |
+| `FileStateStore` (single-host) | **Stable** | Atomic, integrity-checked, CAS. |
 | Testing conformance harness | **Stable** | |
-| CLI (`pqlms`) | **Stable, preview** | |
-| Hybrid (HSS + ML-DSA) | **Stable, preview** | ML-DSA via BouncyCastle. |
-| AspNetCore DI + health check | **Stable, preview** | Pluggable stores; bring your own Redis/EF/HSM store. |
-| Relational / DB state store | **Stable, preview** | `SqliteStateStore` (PostQuantum.LMS.Signer.Sqlite) with CAS; conformance-tested. Same pattern ports to Postgres/SQL Server. Multi-*host* signing still wants a server DB or HSM — see [docs/operations.md](https://github.com/systemslibrarian/postquantum-lms-signer/blob/main/docs/operations.md). |
-| Analyzers | **Stable, preview** | Three rules (`PQLMS001`–`PQLMS003`), release-tracked and tested; more rules planned. |
-| Templates | **Stable, preview** | One `dotnet new` template (firmware-signer: HSS + `FileStateStore`). |
-| All SP 800-208 sets (SHA-256 & SHAKE256, n=32 & n=24) | **Stable, preview** | All 16 LM-OTS + 20 LMS typecodes implemented; n=24 and SHAKE families cross-checked byte-for-byte vs BouncyCastle. |
+| CLI (`pqlms`) | **Stable** | |
+| Hybrid (HSS + ML-DSA) | **Stable** | ML-DSA via BouncyCastle. |
+| AspNetCore DI + health check | **Stable** | Pluggable stores; bring your own Redis/EF/HSM store. |
+| Relational / DB state store | **Stable** | `SqliteStateStore` (PostQuantum.LMS.Signer.Sqlite) with CAS; conformance-tested. Same pattern ports to Postgres/SQL Server. Multi-*host* signing still wants a server DB or HSM — see [docs/operations.md](https://github.com/systemslibrarian/postquantum-lms-signer/blob/main/docs/operations.md). |
+| Analyzers | **Stable** | Three rules (`PQLMS001`–`PQLMS003`), release-tracked and tested; more rules planned. |
+| Templates | **Stable** | One `dotnet new` template (firmware-signer: HSS + `FileStateStore`). |
+| All SP 800-208 sets (SHA-256 & SHAKE256, n=32 & n=24) | **Stable** | All 16 LM-OTS + 20 LMS typecodes implemented; n=24 and SHAKE families cross-checked byte-for-byte vs BouncyCastle. |
 | SBOM · build provenance · checksums | **Automated** | Generated on every tagged release; verify per [docs/releasing.md](https://github.com/systemslibrarian/postquantum-lms-signer/blob/main/docs/releasing.md). |
 | NuGet publish | **Live** | Published to NuGet.org via **Trusted Publishing** (OIDC) on every tagged release — no stored API key. |
 | Author-signed packages | **Wired, secret-gated** | Active once a code-signing certificate secret is configured; until then packages carry NuGet.org's repository signature. |
@@ -254,7 +264,7 @@ bool ok = HybridPublicKey.Decode(File.ReadAllBytes("fw-2026.hybrid.pub"))
 
 ## Status & honesty
 
-This is a **preview**. The core is implemented and cross-validated, but **before any CNSA/production claim it should undergo an independent third-party audit and a side-channel review.** We document residual risks rather than paper over them — see [docs/security-assurance.md](https://github.com/systemslibrarian/postquantum-lms-signer/blob/main/docs/security-assurance.md).
+This is **1.0**: the public API and the on-disk/wire formats are stable. The core is implemented and cross-validated against BouncyCastle and pinned KATs, but it has **not** had an independent third-party audit or a side-channel review — so **before any CNSA/production assurance claim, commission that review yourself.** We document residual risks rather than paper over them — see [docs/security-assurance.md](https://github.com/systemslibrarian/postquantum-lms-signer/blob/main/docs/security-assurance.md).
 
 ## Contributing
 

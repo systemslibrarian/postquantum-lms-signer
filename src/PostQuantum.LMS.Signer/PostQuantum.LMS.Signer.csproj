@@ -7,7 +7,7 @@
 
     <PackageId>PostQuantum.LMS.Signer</PackageId>
     <Title>PostQuantum.LMS.Signer</Title>
-    <Description>Production-grade, auditable .NET implementation of NIST SP 800-208 / RFC 8554 stateful hash-based signatures (LMS &amp; HSS) for firmware signing, secure boot, and code signing. Pure managed core with crash-safe, never-reuse state management as the headline feature.</Description>
+    <Description>PostQuantum.LMS.Signer is a pure-managed .NET implementation of NIST SP 800-208 / RFC 8554 stateful hash-based signatures (LMS and HSS), built for firmware signing, secure boot, and code signing in the post-quantum era. It includes strong state-management protections — persist-before-sign semantics, atomic crash-safe state updates, and compare-and-swap anti-reuse guards — and supports both pure LMS/HSS and hybrid LMS + ML-DSA (FIPS 204) modes. The public API and on-disk state format are stable as of 1.0. This library has not received an independent cryptographic audit; stateful signature schemes require careful operational discipline to avoid one-time-key reuse, so review the threat model and state-management guidance before production use.</Description>
 
     <!-- AOT / trimming friendliness for embedded + signing-service scenarios. -->
     <IsTrimmable>true</IsTrimmable>

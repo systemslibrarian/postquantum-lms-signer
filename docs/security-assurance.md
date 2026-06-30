@@ -7,7 +7,8 @@ companion to [/SECURITY.md](/SECURITY.md) (reporting and scope) and the threat-m
 
 ## Assurance status
 
-PostQuantum.LMS.Signer is **preview** software.
+PostQuantum.LMS.Signer is **1.0**: the public API and the on-disk/wire formats are stable.
+Stability is a compatibility promise, **not** an assurance claim — the items below still hold.
 
 - It has **not** had an independent third-party security audit.
 - It has **not** had a formal side-channel / constant-time review.
@@ -23,7 +24,7 @@ What *has* been done, and is reproducible from the test suite:
 - **Pinned known-answer tests (KATs).** Vectors are pinned in
   `PostQuantum.LMS.Signer.Testing` and asserted on every run, so a wire-format or computation
   regression fails the build.
-- **68 tests on .NET 8 and .NET 10.** The suite multi-targets `net8.0` and `net10.0`; CI runs
+- **99 tests on .NET 8 and .NET 10.** The suite multi-targets `net8.0` and `net10.0`; CI runs
   it on both runtimes.
 
 This is meaningful evidence of **functional correctness and interoperability**. It is not a
@@ -98,19 +99,25 @@ Even when used exactly as documented, these risks remain and are the operator's 
   and compare-and-swap guarantees. Validate any custom store with the conformance harness
   (below) before trusting a key to it.
 
-## Supply-chain roadmap (planned — not yet done)
+## Supply-chain assurances
 
-The following supply-chain assurances are **planned and not yet in place**. Do not assume they
-exist today:
+In place as of 1.0, reproducible from the release workflow
+([/.github/workflows/release.yml](/.github/workflows/release.yml)):
 
-- [ ] **SBOM** (e.g. CycloneDX/SPDX) published with each release.
-- [ ] **Signed NuGet packages** plus release **provenance / build attestations**.
-- [ ] **Fuzzing in CI** for the wire-format parsers (signature and state decode paths).
-- [ ] **CodeQL** static analysis. (A workflow exists at
-  [/.github/workflows/codeql.yml](/.github/workflows/codeql.yml); treat results as advisory
-  during preview.)
+- [x] **SBOM** — per-package CycloneDX SBOMs generated and attached on every tagged release.
+- [x] **Release provenance / build attestations** — `actions/attest-build-provenance` on
+  release artifacts, plus per-package SHA-256 checksums. Verification steps in
+  [/docs/releasing.md](/docs/releasing.md).
+- [x] **Fuzzing in CI** — negative-corpus / fuzz tests for the wire-format parsers (signature
+  and state decode paths) run as part of the CI test suite.
+- [x] **CodeQL** static analysis ([/.github/workflows/codeql.yml](/.github/workflows/codeql.yml)).
+- [x] **NuGet publish via Trusted Publishing (OIDC)** — no stored API key.
 
-When these land they will be reflected in [/CHANGELOG.md](/CHANGELOG.md) and this document
-will be updated to move them out of the "planned" list.
+Still outstanding:
+
+- [ ] **Author-signed NuGet packages.** The release workflow is wired for code signing; it
+  activates once a code-signing certificate secret is configured. Until then packages carry
+  NuGet.org's repository signature.
+- [ ] **Independent third-party security/cryptography audit and side-channel evaluation.**
 
 To God be the glory.
