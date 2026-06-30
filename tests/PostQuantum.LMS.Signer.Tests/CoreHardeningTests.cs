@@ -198,4 +198,87 @@ public sealed class CoreHardeningTests
             previous = signer.SignaturesRemaining;
         }
     }
+
+    [Fact]
+    public async Task PersistenceFailure_AtRekeyBoundary_RollsBackCleanly_NoReuse()
+    {
+        // Small = h5/h5: the bottom subtree holds 32, so the 33rd signature must re-key. We make the
+        // durable SAVE of that re-keying signature fail and assert the signer rolls the in-memory engine
+        // back to the last durable state — no half-applied re-key, no rewound counter — and that signing
+        // then resumes correctly with no one-time-key reuse. This exercises persist-before-sign at its
+        // most dangerous moment: a store failure exactly as a subtree is being re-keyed.
+        var store = new FailableStateStore(new InMemoryStateStore());
+        using var signer = await HssSigner.CreateAsync(HssParameters.Small, store, "fw");
+        byte[] pub = signer.PublicKey();
+
+        var sigs = new List<(byte[] Msg, byte[] Sig)>();
+
+        // Fill the bottom subtree exactly (leaves 0..31); no re-key yet.
+        for (int i = 0; i < 32; i++)
+        {
+            byte[] m = System.Text.Encoding.UTF8.GetBytes($"m{i}");
+            sigs.Add((m, await signer.SignAsync(m)));
+        }
+
+        long remainingBeforeFault = signer.SignaturesRemaining;
+
+        // The next signature triggers a re-key; make its durable save throw.
+        store.FailNextSave = true;
+        await Assert.ThrowsAsync<IOException>(async () => await signer.SignAsync("rekey-but-save-fails"u8.ToArray()));
+
+        // Rollback invariant: the failed attempt consumed nothing. A half-applied re-key would have reset
+        // the bottom counter to 0 and INFLATED the remaining budget; a clean rollback leaves it untouched.
+        Assert.Equal(remainingBeforeFault, signer.SignaturesRemaining);
+
+        // ...and in-memory state must match what is actually durable (a fresh load sees the same budget).
+        using (var reloaded = await HssSigner.LoadAsync(store, "fw"))
+        {
+            Assert.Equal(remainingBeforeFault, reloaded.SignaturesRemaining);
+        }
+
+        // Recover: the re-key now succeeds and signing continues, decrementing by exactly one each time.
+        store.FailNextSave = false;
+        long previous = signer.SignaturesRemaining;
+        for (int i = 32; i < 48; i++)
+        {
+            byte[] m = System.Text.Encoding.UTF8.GetBytes($"m{i}");
+            sigs.Add((m, await signer.SignAsync(m)));
+            Assert.Equal(previous - 1, signer.SignaturesRemaining);
+            previous = signer.SignaturesRemaining;
+        }
+
+        // Every released signature — across the boundary and the failed-then-retried re-key — verifies.
+        foreach (var (msg, sig) in sigs)
+        {
+            Assert.True(HssSigner.Verify(pub, msg, sig), "a signature failed to verify after a re-key-boundary save failure");
+        }
+    }
+
+    /// <summary>
+    /// Wraps a real store but can be told to throw on the next <see cref="SaveAsync"/> as if the durable
+    /// write failed (e.g. disk full) WITHOUT advancing the underlying store — modelling a save that did
+    /// not persist. Test-only: it lives in the test assembly and is never part of the shipped library.
+    /// </summary>
+    private sealed class FailableStateStore : IStateStore
+    {
+        private readonly IStateStore _inner;
+
+        public FailableStateStore(IStateStore inner) => _inner = inner;
+
+        /// <summary>When set, the next save throws instead of persisting. The test clears it to recover.</summary>
+        public bool FailNextSave { get; set; }
+
+        public ValueTask<LoadedState?> LoadAsync(string keyId, CancellationToken cancellationToken = default)
+            => _inner.LoadAsync(keyId, cancellationToken);
+
+        public ValueTask<long> SaveAsync(string keyId, ReadOnlyMemory<byte> data, long expectedVersion, CancellationToken cancellationToken = default)
+        {
+            if (FailNextSave)
+            {
+                throw new IOException("simulated durable-write failure");
+            }
+
+            return _inner.SaveAsync(keyId, data, expectedVersion, cancellationToken);
+        }
+    }
 }
