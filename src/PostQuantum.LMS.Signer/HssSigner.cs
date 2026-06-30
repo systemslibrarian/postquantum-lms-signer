@@ -87,9 +87,15 @@ public sealed class HssSigner : IDisposable
         try
         {
             byte[] snapshot = _engine.Serialize();
-            HssEngine.SignaturePlan plan = _engine.PrepareNext();
+            HssEngine.SignaturePlan plan;
             try
             {
+                // Advance state (incl. any subtree re-keying) AND persist under one guard. A fault in
+                // PrepareNext — e.g. an allocation failure while building a fresh re-keyed subtree —
+                // is as dangerous as a failed store write: either could leave a partially mutated
+                // engine that later reuses a one-time-key index. On any fault here, restore the last
+                // durable snapshot so a crash/fault can at worst waste an index, never reuse one.
+                plan = _engine.PrepareNext();
                 _version = await _store.SaveAsync(_keyId, _engine.Serialize(), _version, cancellationToken).ConfigureAwait(false);
             }
             catch
@@ -98,6 +104,9 @@ public sealed class HssSigner : IDisposable
                 throw;
             }
 
+            // Deliberately OUTSIDE the restore block: the index is now durably consumed. If signing
+            // throws here the index is wasted (safe), whereas rewinding in-memory state below the
+            // persisted version would reissue the just-reserved leaf — a reuse.
             return _engine.CompleteSign(plan, message);
         }
         finally

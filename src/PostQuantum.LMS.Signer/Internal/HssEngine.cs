@@ -169,16 +169,25 @@ internal sealed class HssEngine
             Rekey(level - 1);
         }
 
-        // Fresh subtree at this level.
-        _identifier[level] = RandomBytes(LmsConstants.IdentifierLength);
-        _seed[level] = RandomBytes(SeedLength(level));
-        _q[level] = 0;
-        _trees[level] = BuildTree(level);
+        // Build the fresh subtree and its parent chain signature into LOCALS first, performing every
+        // operation that can throw (allocation, tree build, parent sign) before mutating any field.
+        // Only once all of them have succeeded do we commit the new state in one shot. This keeps the
+        // engine from being left half-re-keyed (e.g. q reset to 0 but _trees still the old, exhausted
+        // tree) if an allocation fails mid-way — a partial mutation that could otherwise reuse an index.
+        byte[] newIdentifier = RandomBytes(LmsConstants.IdentifierLength);
+        byte[] newSeed = RandomBytes(SeedLength(level));
+        LmsTree newTree = LmsTree.Build(_levelParams[level].Lms, _levelParams[level].LmOts, newIdentifier, newSeed);
 
-        // Parent signs the new child public key with its next leaf.
-        byte[] childPub = _trees[level].PublicKey();
+        byte[] childPub = newTree.PublicKey();
         uint parentLeaf = (uint)_q[level - 1];
-        _chainSig[level - 1] = _trees[level - 1].Sign(parentLeaf, childPub, RandomBytes(SeedLength(level - 1)));
+        byte[] newChainSig = _trees[level - 1].Sign(parentLeaf, childPub, RandomBytes(SeedLength(level - 1)));
+
+        // Commit: no operation below this line can throw.
+        _identifier[level] = newIdentifier;
+        _seed[level] = newSeed;
+        _trees[level] = newTree;
+        _q[level] = 0;
+        _chainSig[level - 1] = newChainSig;
         _q[level - 1] = parentLeaf + 1;
     }
 
